@@ -221,11 +221,18 @@
 
     .status-bar {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       align-items: center;
-      gap: 0.5rem;
       font-size: 0.8rem;
       color: #64748b;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .status-dot {
@@ -246,6 +253,11 @@
       animation: spin 1s infinite;
     }
 
+    .status-dot.creating {
+      background: #8b5cf6;
+      animation: pulse 0.5s infinite;
+    }
+
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
@@ -254,6 +266,22 @@
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+
+    .btn-reset {
+      background: transparent;
+      border: 1px solid #cbd5e1;
+      color: #64748b;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-reset:hover {
+      background: #fee2e2;
+      color: #dc2626;
+      border-color: #dc2626;
     }
 
     .stats-grid {
@@ -510,9 +538,14 @@
 
   <!-- Status indicator -->
   <div class="status-bar">
-    <div class="status-dot" id="statusDot"></div>
-    <span id="statusText">Online</span>
-    <span style="margin-left: 0.5rem; font-size: 0.7rem; color: #94a3b8;" id="binIdDisplay"></span>
+    <div class="status-left">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Ready</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <span id="binIdDisplay" style="font-size: 0.7rem; color: #94a3b8;"></span>
+      <button class="btn-reset" id="resetBtn" title="Reset storage"><i class="fas fa-arrow-rotate-right"></i> Reset</button>
+    </div>
   </div>
 
   <!-- Main dashboard (hidden until login) -->
@@ -575,12 +608,11 @@
   (function() {
     // ==================== CONFIGURATION ====================
     const JSONBIN_API_KEY = '$2a$10$rmWQGPxfJARPTZxLIKFN1.ZTAakXr3OvJKBau.5lWg2iaK.yZps4i';
-    
-    // BIN ID will be saved in localStorage after first creation
-    let JSONBIN_BIN_ID = localStorage.getItem('medleave_bin_id') || '';
-    
-    const MAX_DAYS_PER_MONTH = 4;
     const JSONBIN_BASE_URL = 'https://api.jsonbin.io/v3/b';
+    const MAX_DAYS_PER_MONTH = 4;
+    
+    // Get BIN ID from localStorage
+    let JSONBIN_BIN_ID = localStorage.getItem('medleave_bin_id') || '';
     
     let currentDoctor = { id: '', name: '' };
     let viewDate = new Date();
@@ -591,9 +623,10 @@
     function updateBinIdDisplay() {
       const display = document.getElementById('binIdDisplay');
       if (JSONBIN_BIN_ID) {
-        display.textContent = 'BIN: ' + JSONBIN_BIN_ID.substring(0, 8) + '...';
+        display.textContent = '📦 BIN: ' + JSONBIN_BIN_ID.substring(0, 10) + '...';
+        display.title = 'Full BIN ID: ' + JSONBIN_BIN_ID;
       } else {
-        display.textContent = 'Creating storage...';
+        display.textContent = '📦 No storage yet';
       }
     }
     updateBinIdDisplay();
@@ -633,28 +666,51 @@
     const currentMonthLabel = document.getElementById('currentMonthLabel');
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
+    const resetBtn = document.getElementById('resetBtn');
     
     // ==================== JSONBin API Functions ====================
     
     function updateStatus(state) {
       statusDot.className = 'status-dot';
-      if (state === 'syncing') {
-        statusDot.classList.add('syncing');
-        statusText.textContent = 'Syncing...';
-      } else if (state === 'online') {
-        statusText.textContent = 'Online - Data saved on server';
-      } else if (state === 'offline') {
-        statusDot.classList.add('offline');
-        statusText.textContent = 'Offline - Using local data';
-      } else if (state === 'error') {
-        statusDot.classList.add('offline');
-        statusText.textContent = 'Server error - Try again';
+      switch(state) {
+        case 'syncing':
+          statusDot.classList.add('syncing');
+          statusText.textContent = 'Syncing...';
+          break;
+        case 'online':
+          statusText.textContent = 'Online - Server connected';
+          break;
+        case 'creating':
+          statusDot.classList.add('creating');
+          statusText.textContent = 'Creating storage...';
+          break;
+        case 'offline':
+          statusDot.classList.add('offline');
+          statusText.textContent = 'Offline mode';
+          break;
+        case 'error':
+          statusDot.classList.add('offline');
+          statusText.textContent = 'Connection error';
+          break;
+        default:
+          statusText.textContent = 'Ready';
+      }
+    }
+    
+    async function testApiConnection() {
+      try {
+        const response = await fetch(`${JSONBIN_BASE_URL}/test`, {
+          headers: { 'X-Master-Key': JSONBIN_API_KEY }
+        });
+        return response.ok;
+      } catch (e) {
+        return false;
       }
     }
     
     async function fetchAllBookings() {
       if (!JSONBIN_BIN_ID) {
-        console.log('No BIN ID found, creating new bin...');
+        console.log('No BIN ID, creating new storage...');
         return await createNewBin();
       }
       
@@ -662,35 +718,49 @@
       try {
         const response = await fetch(`${JSONBIN_BASE_URL}/${JSONBIN_BIN_ID}/latest`, {
           headers: { 
-            'X-Master-Key': JSONBIN_API_KEY,
-            'X-Bin-Meta': 'false'
+            'X-Master-Key': JSONBIN_API_KEY 
           }
         });
         
+        // If 404, BIN doesn't exist - create new one
         if (response.status === 404) {
-          // BIN deleted or invalid, create new one
-          console.log('BIN not found, creating new...');
+          console.log('BIN not found (404), creating new storage...');
           localStorage.removeItem('medleave_bin_id');
           JSONBIN_BIN_ID = '';
           updateBinIdDisplay();
           return await createNewBin();
         }
         
-        if (!response.ok) throw new Error('Failed to fetch');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         
         const data = await response.json();
-        allBookingsCache = data.record || data || {};
+        allBookingsCache = data.record || {};
         updateStatus('online');
+        console.log('✅ Data loaded successfully');
         return allBookingsCache;
       } catch (error) {
-        console.error('Fetch error:', error);
+        console.error('Fetch error:', error.message);
+        
+        // If network error, try to use backup
+        const backup = localStorage.getItem('medleave_backup');
+        if (backup) {
+          try {
+            allBookingsCache = JSON.parse(backup);
+            updateStatus('offline');
+            console.log('⚠️ Using local backup');
+            return allBookingsCache;
+          } catch(e) {}
+        }
+        
         updateStatus('error');
         return allBookingsCache;
       }
     }
     
     async function createNewBin() {
-      updateStatus('syncing');
+      updateStatus('creating');
       try {
         const initialData = {};
         const response = await fetch(JSONBIN_BASE_URL, {
@@ -698,15 +768,15 @@
           headers: {
             'Content-Type': 'application/json',
             'X-Master-Key': JSONBIN_API_KEY,
-            'X-Bin-Name': 'medleave-bookings'
+            'X-Bin-Name': 'medleave-bookings-' + Date.now()
           },
           body: JSON.stringify(initialData)
         });
         
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('Create bin error response:', errorText);
-          throw new Error('Failed to create bin');
+          console.error('Create bin failed:', errorText);
+          throw new Error(`Failed to create bin: ${response.status}`);
         }
         
         const data = await response.json();
@@ -716,20 +786,15 @@
         localStorage.setItem('medleave_bin_id', JSONBIN_BIN_ID);
         updateBinIdDisplay();
         
-        console.log('✅ New BIN created with ID:', JSONBIN_BIN_ID);
+        console.log('✅ New BIN created:', JSONBIN_BIN_ID);
         allBookingsCache = initialData;
         updateStatus('online');
-        
-        // Show success message
-        setTimeout(() => {
-          showMessage('✅ Storage created successfully! Data will sync across devices.', 'success');
-        }, 500);
         
         return allBookingsCache;
       } catch (error) {
         console.error('Create bin error:', error);
         updateStatus('error');
-        alert('❌ Failed to create storage. Please check your API key and try again.\n\nError: ' + error.message);
+        alert('❌ Failed to create storage.\n\nPlease check:\n1. Your internet connection\n2. That the API key is correct\n\nError: ' + error.message);
         return allBookingsCache;
       }
     }
@@ -754,8 +819,8 @@
         if (!response.ok) throw new Error('Failed to save');
         
         updateStatus('online');
-        // Also save locally as backup
         localStorage.setItem('medleave_backup', JSON.stringify(bookingsData));
+        console.log('✅ Data saved successfully');
         return true;
       } catch (error) {
         console.error('Save error:', error);
@@ -763,6 +828,38 @@
         localStorage.setItem('medleave_backup', JSON.stringify(bookingsData));
         return false;
       }
+    }
+    
+    async function resetStorage() {
+      if (!confirm('⚠️ This will delete ALL bookings and create new storage. Continue?')) return;
+      
+      // Delete old BIN if exists
+      if (JSONBIN_BIN_ID) {
+        try {
+          await fetch(`${JSONBIN_BASE_URL}/${JSONBIN_BIN_ID}`, {
+            method: 'DELETE',
+            headers: { 'X-Master-Key': JSONBIN_API_KEY }
+          });
+        } catch(e) {
+          console.log('Could not delete old BIN:', e);
+        }
+      }
+      
+      // Clear local data
+      localStorage.removeItem('medleave_bin_id');
+      localStorage.removeItem('medleave_backup');
+      JSONBIN_BIN_ID = '';
+      allBookingsCache = {};
+      updateBinIdDisplay();
+      
+      // Create new storage
+      await createNewBin();
+      
+      if (currentDoctor.id) {
+        renderDashboard();
+      }
+      
+      alert('✅ Storage reset successfully! New BIN created.');
     }
     
     function getStorageKey(year, month) {
@@ -879,7 +976,7 @@
       
       const saved = await saveAllBookings(allBookingsCache);
       renderDashboard();
-      showMessage(saved ? `Day ${day} cancelled successfully!` : `Day ${day} cancelled (saved locally)`, saved ? 'success' : 'error');
+      showMessage(saved ? `Day ${day} cancelled!` : `Day ${day} cancelled (offline)`, saved ? 'success' : 'error');
     }
     
     async function addBooking() {
@@ -917,7 +1014,7 @@
       
       const saved = await saveAllBookings(allBookingsCache);
       renderDashboard();
-      showMessage(saved ? `Day ${selectedDay} booked successfully!` : `Day ${selectedDay} booked (saved locally)`, saved ? 'success' : 'error');
+      showMessage(saved ? `Day ${selectedDay} booked!` : `Day ${selectedDay} booked (offline)`, saved ? 'success' : 'error');
     }
     
     function showMessage(text, type) {
@@ -1003,6 +1100,7 @@
     addDayBtn.addEventListener('click', addBooking);
     prevMonthBtn.addEventListener('click', goToPreviousMonth);
     nextMonthBtn.addEventListener('click', goToNextMonth);
+    resetBtn.addEventListener('click', resetStorage);
     doctorIdInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
     doctorNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
     
@@ -1011,9 +1109,19 @@
     userDisplay.style.display = 'none';
     updateStatus('online');
     
+    // Test connection on load
+    testApiConnection().then(ok => {
+      if (ok) {
+        console.log('✅ API connection OK');
+        updateStatus('online');
+      } else {
+        console.warn('⚠️ Cannot reach API');
+        updateStatus('offline');
+      }
+    });
+    
     console.log('🏥 MedLeave App Ready');
     console.log('📦 BIN ID:', JSONBIN_BIN_ID || 'Will be created on first login');
-    console.log('🔑 API Key:', JSONBIN_API_KEY.substring(0, 10) + '...');
   })();
 </script>
 </body>
