@@ -9,11 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -33,12 +29,11 @@
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(20px);
       border-radius: 2.5rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255,255,255,0.5);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5);
       padding: 2rem 2rem 2.2rem;
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
-      transition: all 0.3s ease;
     }
 
     .top-section {
@@ -49,470 +44,171 @@
       gap: 1.5rem;
     }
 
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-    }
+    .logo-area { display: flex; align-items: center; gap: 0.7rem; }
 
     .logo-icon {
       background: linear-gradient(135deg, #0ea5e9, #0284c7);
       color: white;
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 1.6rem;
-      box-shadow: 0 12px 20px -10px rgba(14, 165, 233, 0.4);
-      transition: transform 0.3s ease;
-    }
-
-    .logo-icon:hover {
-      transform: rotate(-5deg) scale(1.05);
+      box-shadow: 0 12px 20px -10px rgba(14,165,233,0.4);
     }
 
     .logo-text {
-      font-weight: 700;
-      font-size: 1.7rem;
-      letter-spacing: -0.5px;
+      font-weight: 700; font-size: 1.7rem; letter-spacing: -0.5px;
       background: linear-gradient(135deg, #0369a1, #0c4a6e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
     .logo-text span {
       font-weight: 500;
       background: linear-gradient(135deg, #0ea5e9, #38bdf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
     .login-card {
-      background: #f8fafc;
-      border-radius: 2rem;
-      padding: 0.8rem 1.8rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      border: 1px solid #e2e8f0;
-      transition: all 0.3s ease;
-    }
-
-    .login-card:hover {
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      background: #f8fafc; border-radius: 2rem; padding: 0.8rem 1.8rem;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
     }
 
     .input-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: white;
-      border-radius: 2.5rem;
-      padding: 0.4rem 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      background: white; border-radius: 2.5rem; padding: 0.4rem 1rem;
       border: 1px solid #dce3eb;
-      transition: 0.3s;
     }
-
-    .input-group:focus-within {
-      border-color: #0ea5e9;
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-    }
-
-    .input-group i {
-      color: #5b7c9b;
-      font-size: 0.9rem;
-    }
+    .input-group:focus-within { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,0.1); }
+    .input-group i { color: #5b7c9b; font-size: 0.9rem; }
     .input-group input {
-      border: none;
-      background: transparent;
-      padding: 0.5rem 0.2rem;
-      font-size: 0.9rem;
-      font-weight: 500;
-      width: 130px;
-      outline: none;
-      color: #0f172a;
+      border: none; background: transparent; padding: 0.5rem 0.2rem;
+      font-size: 0.9rem; font-weight: 500; width: 130px; outline: none; color: #0f172a;
     }
-    .input-group input::placeholder {
-      color: #94a3b8;
-      font-weight: 400;
-    }
+    .input-group input::placeholder { color: #94a3b8; font-weight: 400; }
 
     .btn {
-      background: white;
-      border: none;
-      border-radius: 2.5rem;
-      padding: 0.6rem 1.6rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      border: none; border-radius: 2.5rem; padding: 0.6rem 1.6rem;
+      font-weight: 600; font-size: 0.9rem;
+      display: flex; align-items: center; gap: 0.4rem; cursor: pointer;
       background: linear-gradient(135deg, #0ea5e9, #0284c7);
-      color: white;
-      box-shadow: 0 8px 18px -6px rgba(14, 165, 233, 0.5);
-      border: 1px solid transparent;
+      color: white; box-shadow: 0 8px 18px -6px rgba(14,165,233,0.5);
       letter-spacing: -0.2px;
     }
-    .btn i {
-      font-size: 0.9rem;
-    }
-    .btn:hover {
-      background: linear-gradient(135deg, #0284c7, #0369a1);
-      box-shadow: 0 12px 24px -8px rgba(14, 165, 233, 0.6);
-      transform: translateY(-2px);
-    }
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn-outline {
-      background: white;
-      color: #0369a1;
-      border: 1px solid #cbd5e1;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-    }
-    .btn-outline:hover {
-      background: #f0f9ff;
-      color: #0284c7;
-      border-color: #0ea5e9;
-    }
-    .btn-sm {
-      padding: 0.4rem 1.2rem;
-      font-size: 0.8rem;
-    }
+    .btn:hover { background: linear-gradient(135deg, #0284c7, #0369a1); transform: translateY(-2px); }
+    .btn-outline { background: white; color: #0369a1; border: 1px solid #cbd5e1; box-shadow: none; }
+    .btn-outline:hover { background: #f0f9ff; }
+    .btn-sm { padding: 0.4rem 1.2rem; font-size: 0.8rem; }
 
     .user-welcome {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      background: #e0f2fe;
-      border-radius: 3rem;
-      padding: 0.3rem 1.2rem 0.3rem 0.3rem;
+      display: flex; align-items: center; gap: 0.7rem;
+      background: #e0f2fe; border-radius: 3rem; padding: 0.3rem 1.2rem 0.3rem 0.3rem;
       animation: slideIn 0.4s ease;
     }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 
     .avatar {
       background: linear-gradient(135deg, #0ea5e9, #0284c7);
-      color: white;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 1rem;
+      color: white; width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem;
     }
-    .doctor-name {
-      font-weight: 600;
-      color: #0c4a6e;
-    }
+    .doctor-name { font-weight: 600; color: #0c4a6e; }
 
     .status-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.8rem;
-      color: #64748b;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.8rem; color: #64748b; flex-wrap: wrap; gap: 0.5rem;
     }
-
-    .status-left {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
+    .status-left { display: flex; align-items: center; gap: 0.5rem; }
     .status-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #22c55e;
+      width: 10px; height: 10px; border-radius: 50%; background: #22c55e;
       animation: pulse 2s infinite;
     }
+    .status-dot.offline { background: #ef4444; animation: none; }
+    .status-dot.syncing { background: #f59e0b; animation: spin 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
 
-    .status-dot.offline {
-      background: #ef4444;
-      animation: none;
-    }
-
-    .status-dot.syncing {
-      background: #f59e0b;
-      animation: spin 1s infinite;
-    }
-
-    .status-dot.creating {
-      background: #8b5cf6;
-      animation: pulse 0.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .btn-reset {
-      background: transparent;
-      border: 1px solid #cbd5e1;
-      color: #64748b;
-      font-size: 0.7rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 1rem;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .btn-reset:hover {
-      background: #fee2e2;
-      color: #dc2626;
-      border-color: #dc2626;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1.2rem;
-      margin: 0.5rem 0;
-    }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.2rem; margin: 0.5rem 0; }
     .stat-card {
-      background: #f9fcff;
-      border-radius: 1.8rem;
-      padding: 1.2rem 1.4rem;
-      box-shadow: 0 8px 20px -8px rgba(0,32,64,0.08);
-      border: 1px solid #eef3f9;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: 0.3s ease;
-      cursor: default;
+      background: #f9fcff; border-radius: 1.8rem; padding: 1.2rem 1.4rem;
+      box-shadow: 0 8px 20px -8px rgba(0,32,64,0.08); border: 1px solid #eef3f9;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .stat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px -10px rgba(0,32,64,0.12);
-    }
-    .stat-info h4 {
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #51718c;
-      margin-bottom: 0.3rem;
-    }
+    .stat-card:hover { transform: translateY(-3px); }
+    .stat-info h4 { font-weight: 600; font-size: 0.9rem; text-transform: uppercase; color: #51718c; margin-bottom: 0.3rem; }
     .stat-number {
-      font-size: 2.1rem;
-      font-weight: 700;
+      font-size: 2.1rem; font-weight: 700;
       background: linear-gradient(135deg, #0369a1, #0c4a6e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .stat-icon {
-      font-size: 2rem;
-      color: #0ea5e9;
-      opacity: 0.5;
-    }
+    .stat-icon { font-size: 2rem; color: #0ea5e9; opacity: 0.5; }
 
     .month-selector {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #f0f4fa;
-      border-radius: 2.5rem;
-      padding: 0.5rem 1.2rem;
-      margin: 0.5rem 0 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: #f0f4fa; border-radius: 2.5rem; padding: 0.5rem 1.2rem; margin: 0.5rem 0 1rem;
     }
-    .month-title {
-      font-weight: 700;
-      font-size: 1.3rem;
-      color: #0c4a6e;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+    .month-title { font-weight: 700; font-size: 1.3rem; color: #0c4a6e; display: flex; align-items: center; gap: 0.5rem; }
     .nav-arrow {
-      background: white;
-      border: none;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #0ea5e9;
-      font-size: 1rem;
+      background: white; border: none; border-radius: 50%; width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #0ea5e9; font-size: 1rem;
       box-shadow: 0 5px 12px rgba(0,0,0,0.05);
-      transition: 0.3s;
     }
-    .nav-arrow:hover:not(:disabled) {
-      background: #e0f2fe;
-      transform: scale(1.1);
-    }
-    .nav-arrow:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
+    .nav-arrow:hover:not(:disabled) { background: #e0f2fe; transform: scale(1.1); }
+    .nav-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
 
     .booked-list {
-      background: #f8fafc;
-      border-radius: 1.8rem;
-      padding: 1.2rem 1.5rem;
-      margin: 0.8rem 0 1rem;
-      border: 1px solid #e9f0f7;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    .booked-list::-webkit-scrollbar {
-      width: 6px;
-    }
-    .booked-list::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 3px;
+      background: #f8fafc; border-radius: 1.8rem; padding: 1.2rem 1.5rem;
+      margin: 0.8rem 0 1rem; border: 1px solid #e9f0f7; max-height: 200px; overflow-y: auto;
     }
     .booked-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.7rem 0.4rem;
-      border-bottom: 1px solid #e2e8f0;
-      transition: 0.2s;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.7rem 0.4rem; border-bottom: 1px solid #e2e8f0;
     }
-    .booked-item:hover {
-      background: #f0f9ff;
-      border-radius: 0.5rem;
-    }
-    .booked-item:last-child {
-      border-bottom: none;
-    }
-    .day-badge {
-      background: #dbeafe;
-      color: #1e3a8a;
-      font-weight: 700;
-      padding: 0.3rem 0.9rem;
-      border-radius: 2rem;
-      font-size: 0.85rem;
-    }
-    .doctor-tag {
-      font-weight: 500;
-      color: #334155;
-    }
+    .booked-item:last-child { border-bottom: none; }
+    .day-badge { background: #dbeafe; color: #1e3a8a; font-weight: 700; padding: 0.3rem 0.9rem; border-radius: 2rem; font-size: 0.85rem; }
+    .doctor-tag { font-weight: 500; color: #334155; }
     .delete-btn {
-      background: transparent;
-      border: none;
-      color: #ef4444;
-      cursor: pointer;
-      font-size: 1rem;
-      opacity: 0.7;
-      transition: 0.2s;
-      padding: 0.3rem 0.5rem;
-      border-radius: 0.5rem;
+      background: transparent; border: none; color: #ef4444; cursor: pointer;
+      font-size: 1rem; opacity: 0.7; padding: 0.3rem 0.5rem; border-radius: 0.5rem;
     }
-    .delete-btn:hover {
-      opacity: 1;
-      transform: scale(1.15);
-      background: #fef2f2;
-    }
+    .delete-btn:hover { opacity: 1; transform: scale(1.15); background: #fef2f2; }
 
-    .action-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 0.3rem;
-    }
-
-    .day-picker {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      background: #ffffff;
-      padding: 0.8rem;
-      border-radius: 2rem;
-      border: 1px solid #dce5ef;
-    }
+    .action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 0.3rem; }
+    .day-picker { display: flex; flex-wrap: wrap; gap: 0.5rem; background: #fff; padding: 0.8rem; border-radius: 2rem; border: 1px solid #dce5ef; }
     .day-cell {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      background: #f1f5f9;
-      color: #1e293b;
-      cursor: pointer;
-      transition: 0.2s;
-      font-size: 0.9rem;
+      width: 38px; height: 38px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; background: #f1f5f9; color: #1e293b;
+      cursor: pointer; font-size: 0.9rem;
     }
-    .day-cell:hover:not(.booked):not(.disabled) {
-      background: #e0f2fe;
-      transform: scale(1.1);
-    }
+    .day-cell:hover:not(.booked):not(.disabled) { background: #e0f2fe; transform: scale(1.1); }
     .day-cell.selected {
-      background: linear-gradient(135deg, #0ea5e9, #0284c7);
-      color: white;
-      box-shadow: 0 6px 12px rgba(14, 165, 233, 0.4);
-      transform: scale(1.1);
+      background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white;
+      box-shadow: 0 6px 12px rgba(14,165,233,0.4); transform: scale(1.1);
     }
-    .day-cell.booked {
-      background: #fecaca;
-      color: #7f1d1d;
-      cursor: not-allowed;
-      text-decoration: line-through;
-    }
-    .day-cell.disabled {
-      opacity: 0.5;
-      pointer-events: none;
-      background: #e9eef3;
-    }
+    .day-cell.booked { background: #fecaca; color: #7f1d1d; cursor: not-allowed; text-decoration: line-through; }
+    .day-cell.disabled { opacity: 0.5; pointer-events: none; background: #e9eef3; }
 
-    .message {
-      font-size: 0.85rem;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      border-radius: 1rem;
-      transition: 0.3s;
+    .message { font-size: 0.85rem; font-weight: 500; padding: 0.5rem 1rem; border-radius: 1rem; }
+    .message.success { color: #059669; background: #d1fae5; }
+    .message.error { color: #dc2626; background: #fee2e2; }
+
+    .btn-reset {
+      background: transparent; border: 1px solid #cbd5e1; color: #64748b;
+      font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 1rem; cursor: pointer;
     }
-    .message.success {
-      color: #059669;
-      background: #d1fae5;
-    }
-    .message.error {
-      color: #dc2626;
-      background: #fee2e2;
-    }
+    .btn-reset:hover { background: #fee2e2; color: #dc2626; border-color: #dc2626; }
 
     @media (max-width: 650px) {
-      .app-container {
-        padding: 1.5rem;
-      }
-      .login-card {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+      .app-container { padding: 1.5rem; }
+      .login-card { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
 <div class="app-container">
   
-  <!-- Header with login -->
   <div class="top-section">
     <div class="logo-area">
       <div class="logo-icon"><i class="fas fa-calendar-check"></i></div>
@@ -536,7 +232,6 @@
     </div>
   </div>
 
-  <!-- Status indicator -->
   <div class="status-bar">
     <div class="status-left">
       <div class="status-dot" id="statusDot"></div>
@@ -544,62 +239,46 @@
     </div>
     <div style="display: flex; align-items: center; gap: 0.5rem;">
       <span id="binIdDisplay" style="font-size: 0.7rem; color: #94a3b8;"></span>
-      <button class="btn-reset" id="resetBtn" title="Reset storage"><i class="fas fa-arrow-rotate-right"></i> Reset</button>
+      <button class="btn-reset" id="resetBtn" title="Reset storage"><i class="fas fa-arrow-rotate-right"></i></button>
     </div>
   </div>
 
-  <!-- Main dashboard (hidden until login) -->
   <div id="dashboardContent" style="display: none;">
-    <!-- Stats -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-info">
-          <h4>Next Month</h4>
-          <div class="stat-number" id="currentMonthLabel">June 2026</div>
-        </div>
+        <div class="stat-info"><h4>Next Month</h4><div class="stat-number" id="currentMonthLabel">-</div></div>
         <i class="fas fa-calendar-alt stat-icon"></i>
       </div>
       <div class="stat-card">
-        <div class="stat-info">
-          <h4>Booked Days</h4>
-          <div class="stat-number" id="bookedCount">0</div>
-        </div>
+        <div class="stat-info"><h4>Booked Days</h4><div class="stat-number" id="bookedCount">0</div></div>
         <i class="fas fa-bookmark stat-icon"></i>
       </div>
       <div class="stat-card">
-        <div class="stat-info">
-          <h4>Remaining</h4>
-          <div class="stat-number" id="remainingCount">4</div>
-        </div>
+        <div class="stat-info"><h4>Remaining</h4><div class="stat-number" id="remainingCount">4</div></div>
         <i class="fas fa-hourglass-half stat-icon"></i>
       </div>
     </div>
 
-    <!-- Month navigator -->
     <div class="month-selector">
       <button class="nav-arrow" id="prevMonthBtn" disabled><i class="fas fa-chevron-left"></i></button>
-      <div class="month-title">
-        <i class="fas fa-calendar-check" style="color: #0ea5e9;"></i> <span id="monthTitle">June 2026</span>
-      </div>
+      <div class="month-title"><i class="fas fa-calendar-check" style="color:#0ea5e9;"></i> <span id="monthTitle">-</span></div>
       <button class="nav-arrow" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
     </div>
 
-    <!-- Booked days list -->
     <div>
-      <h4 style="font-weight:600; margin-bottom:0.3rem; display:flex; gap:0.5rem;"><i class="fas fa-list-check"></i> Booked days for <span id="listMonthLabel">June</span></h4>
+      <h4 style="font-weight:600; margin-bottom:0.3rem;"><i class="fas fa-list-check"></i> Booked days: <span id="listMonthLabel">-</span></h4>
       <div class="booked-list" id="bookedListContainer">
         <div style="color:#64748b; text-align:center; padding:1rem;">No days booked yet.</div>
       </div>
     </div>
 
-    <!-- Day selection & add -->
     <div class="action-row">
       <div class="day-picker" id="dayPickerContainer"></div>
       <button class="btn" id="addDayBtn"><i class="fas fa-plus-circle"></i> Book selected day</button>
       <span class="message" id="bookingMessage"></span>
     </div>
     <div style="font-size:0.8rem; color:#475569; margin-top:0.2rem;">
-      <i class="fas fa-info-circle"></i> Book 1–4 days off per month. Data syncs across all devices via cloud.
+      <i class="fas fa-info-circle"></i> Book 1–4 days off per month. Cloud sync across all devices.
     </div>
   </div>
 </div>
@@ -607,7 +286,10 @@
 <script>
   (function() {
     // ==================== CONFIGURATION ====================
-    const JSONBIN_API_KEY = '$2a$10$njGkEmVOtMn/LMlAsm4gPOoI/9mKsajBi5xizFDc3OinUrhteYqCW';
+    // Access Key (للوصول الكامل)
+    const JSONBIN_ACCESS_KEY = '$2a$10$njGkEmVOtMn/LMlAsm4gPOoI/9mKsajBi5xizFDc3OinUrhteYqCW';
+    
+    // للتبسيط: نستخدم access key للقراءة والكتابة
     const JSONBIN_BASE_URL = 'https://api.jsonbin.io/v3/b';
     const MAX_DAYS_PER_MONTH = 4;
     
@@ -617,493 +299,301 @@
     let selectedDay = null;
     let allBookingsCache = {};
     
+    // الدوال المساعدة
+    function headers() {
+      return {
+        'Content-Type': 'application/json',
+        'X-Access-Key': JSONBIN_ACCESS_KEY
+      };
+    }
+    
     function updateBinIdDisplay() {
-      const display = document.getElementById('binIdDisplay');
-      if (JSONBIN_BIN_ID) {
-        display.textContent = '📦 ' + JSONBIN_BIN_ID.substring(0, 12) + '...';
-      } else {
-        display.textContent = '';
-      }
+      const d = document.getElementById('binIdDisplay');
+      d.textContent = JSONBIN_BIN_ID ? '📦 ' + JSONBIN_BIN_ID.substring(0,10)+'...' : '';
     }
     updateBinIdDisplay();
     
     function computeNextMonthDate() {
       const now = new Date();
-      let year = now.getFullYear();
-      let month = now.getMonth() + 1;
-      month += 1;
-      if (month > 12) { month = 1; year += 1; }
-      return new Date(year, month - 1, 1);
+      let y = now.getFullYear(), m = now.getMonth()+2;
+      if(m>12){m=1;y++;}
+      return new Date(y, m-1, 1);
     }
-    
     viewDate = computeNextMonthDate();
     
-    // UI Elements
-    const loginPanel = document.getElementById('loginPanel');
-    const userDisplay = document.getElementById('userDisplay');
-    const dashboardContent = document.getElementById('dashboardContent');
-    const doctorIdInput = document.getElementById('doctorIdInput');
-    const doctorNameInput = document.getElementById('doctorNameInput');
-    const loginBtn = document.getElementById('loginBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const displayNameSpan = document.getElementById('displayName');
-    const avatarLetter = document.getElementById('avatarLetter');
-    const monthTitle = document.getElementById('monthTitle');
-    const listMonthLabel = document.getElementById('listMonthLabel');
-    const bookedListContainer = document.getElementById('bookedListContainer');
-    const dayPickerContainer = document.getElementById('dayPickerContainer');
-    const addDayBtn = document.getElementById('addDayBtn');
-    const bookingMessage = document.getElementById('bookingMessage');
-    const prevMonthBtn = document.getElementById('prevMonthBtn');
-    const nextMonthBtn = document.getElementById('nextMonthBtn');
-    const bookedCountSpan = document.getElementById('bookedCount');
-    const remainingCountSpan = document.getElementById('remainingCount');
-    const currentMonthLabel = document.getElementById('currentMonthLabel');
-    const statusDot = document.getElementById('statusDot');
-    const statusText = document.getElementById('statusText');
-    const resetBtn = document.getElementById('resetBtn');
-    
-    // ==================== API Functions ====================
+    // عناصر الواجهة
+    const els = {
+      loginPanel: document.getElementById('loginPanel'),
+      userDisplay: document.getElementById('userDisplay'),
+      dashboard: document.getElementById('dashboardContent'),
+      doctorIdInput: document.getElementById('doctorIdInput'),
+      doctorNameInput: document.getElementById('doctorNameInput'),
+      displayName: document.getElementById('displayName'),
+      avatarLetter: document.getElementById('avatarLetter'),
+      monthTitle: document.getElementById('monthTitle'),
+      listMonthLabel: document.getElementById('listMonthLabel'),
+      bookedList: document.getElementById('bookedListContainer'),
+      dayPicker: document.getElementById('dayPickerContainer'),
+      bookedCount: document.getElementById('bookedCount'),
+      remainingCount: document.getElementById('remainingCount'),
+      currentMonthLabel: document.getElementById('currentMonthLabel'),
+      statusDot: document.getElementById('statusDot'),
+      statusText: document.getElementById('statusText'),
+      bookingMessage: document.getElementById('bookingMessage')
+    };
     
     function updateStatus(state) {
-      statusDot.className = 'status-dot';
-      switch(state) {
-        case 'syncing':
-          statusDot.classList.add('syncing');
-          statusText.textContent = 'Syncing...';
-          break;
-        case 'online':
-          statusText.textContent = 'Online - Cloud connected';
-          break;
-        case 'creating':
-          statusDot.classList.add('creating');
-          statusText.textContent = 'Creating cloud storage...';
-          break;
-        case 'offline':
-          statusDot.classList.add('offline');
-          statusText.textContent = 'Offline - Using local storage';
-          break;
-        case 'error':
-          statusDot.classList.add('offline');
-          statusText.textContent = 'Connection error - Check API key';
-          break;
-        default:
-          statusText.textContent = 'Checking...';
-      }
+      els.statusDot.className = 'status-dot';
+      const msgs = {
+        syncing: ['syncing','Syncing...'],
+        online: ['','Online - Cloud connected ✅'],
+        creating: ['syncing','Creating storage...'],
+        error: ['offline','Connection error ❌'],
+        offline: ['offline','Offline mode']
+      };
+      const [cls, txt] = msgs[state] || ['','Ready'];
+      if(cls) els.statusDot.classList.add(cls);
+      els.statusText.textContent = txt;
     }
     
-    async function testApiConnection() {
-      try {
-        const response = await fetch('https://api.jsonbin.io/v3/b/latest', {
-          method: 'HEAD',
-          headers: { 'X-Master-Key': JSONBIN_API_KEY }
-        });
-        console.log('API test status:', response.status);
-        return response.status !== 401 && response.status !== 403;
-      } catch (e) {
-        console.error('API test failed:', e);
-        return false;
-      }
-    }
-    
+    // ==================== API ====================
     async function fetchAllBookings() {
-      if (!JSONBIN_BIN_ID) {
-        console.log('No BIN ID, creating new...');
-        return await createNewBin();
-      }
-      
+      if(!JSONBIN_BIN_ID) return await createNewBin();
       updateStatus('syncing');
-      
       try {
-        const response = await fetch(`${JSONBIN_BASE_URL}/${JSONBIN_BIN_ID}/latest`, {
-          method: 'GET',
-          headers: { 'X-Master-Key': JSONBIN_API_KEY }
-        });
-        
-        console.log('Fetch status:', response.status);
-        
-        if (response.status === 404) {
-          console.log('BIN not found, creating new...');
+        const res = await fetch(`${JSONBIN_BASE_URL}/${JSONBIN_BIN_ID}/latest`, {headers: headers()});
+        console.log('Fetch:', res.status);
+        if(res.status===404) {
           localStorage.removeItem('medleave_bin_id');
-          JSONBIN_BIN_ID = '';
-          updateBinIdDisplay();
+          JSONBIN_BIN_ID=''; updateBinIdDisplay();
           return await createNewBin();
         }
-        
-        if (!response.ok) {
-          const text = await response.text();
-          console.error('Fetch error:', text);
-          throw new Error(`HTTP ${response.status}`);
-        }
-        
-        const data = await response.json();
+        if(!res.ok) throw new Error('Fetch failed');
+        const data = await res.json();
         allBookingsCache = data.record || {};
         updateStatus('online');
-        console.log('✅ Data loaded. Months:', Object.keys(allBookingsCache).length);
         return allBookingsCache;
-      } catch (error) {
-        console.error('Fetch failed:', error);
+      } catch(e) {
+        console.error(e);
         updateStatus('error');
-        
-        const backup = localStorage.getItem('medleave_backup');
-        if (backup) {
-          try {
-            allBookingsCache = JSON.parse(backup);
-            updateStatus('offline');
-            return allBookingsCache;
-          } catch(e) {}
-        }
+        const b = localStorage.getItem('medleave_backup');
+        if(b) { allBookingsCache=JSON.parse(b); updateStatus('offline'); }
         return allBookingsCache;
       }
     }
     
     async function createNewBin() {
       updateStatus('creating');
-      console.log('Creating new BIN...');
-      
       try {
-        const response = await fetch(JSONBIN_BASE_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Master-Key': JSONBIN_API_KEY,
-            'X-Bin-Name': 'medleave-bookings'
-          },
+        const res = await fetch(JSONBIN_BASE_URL, {
+          method:'POST',
+          headers: headers(),
           body: JSON.stringify({})
         });
-        
-        console.log('Create status:', response.status);
-        const responseText = await response.text();
-        console.log('Create response:', responseText.substring(0, 200));
-        
-        if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            alert('❌ API Key Error!\n\nThe API key is invalid or unauthorized.\n\nPlease:\n1. Go to https://jsonbin.io\n2. Sign in\n3. Create a new API Key\n4. Update the code');
-          } else if (response.status === 400) {
-            alert('❌ Bad Request (400)\n\nPossible causes:\n- Invalid API key format\n- Account not verified\n\nPlease check your JSONBin account.');
-          }
-          throw new Error(`Create failed: ${response.status}`);
+        console.log('Create:', res.status);
+        const txt = await res.text();
+        if(!res.ok) {
+          alert('❌ Failed to create storage (Status '+res.status+')\n\n'+txt.substring(0,200)+'\n\nCheck your Access Key at jsonbin.io');
+          updateStatus('error');
+          return {};
         }
-        
-        const data = JSON.parse(responseText);
+        const data = JSON.parse(txt);
         JSONBIN_BIN_ID = data.metadata.id;
-        
         localStorage.setItem('medleave_bin_id', JSONBIN_BIN_ID);
         updateBinIdDisplay();
-        
-        console.log('✅ BIN created:', JSONBIN_BIN_ID);
         allBookingsCache = {};
         updateStatus('online');
-        
+        console.log('✅ BIN:', JSONBIN_BIN_ID);
         return allBookingsCache;
-      } catch (error) {
-        console.error('Create failed:', error);
+      } catch(e) {
+        console.error(e);
         updateStatus('error');
-        return allBookingsCache;
+        return {};
       }
     }
     
-    async function saveAllBookings(bookingsData) {
-      if (!JSONBIN_BIN_ID) {
-        await createNewBin();
-        if (!JSONBIN_BIN_ID) return false;
-      }
-      
+    async function saveAllBookings(data) {
+      if(!JSONBIN_BIN_ID) { await createNewBin(); if(!JSONBIN_BIN_ID) return false; }
       updateStatus('syncing');
-      
       try {
-        const response = await fetch(`${JSONBIN_BASE_URL}/${JSONBIN_BIN_ID}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Master-Key': JSONBIN_API_KEY
-          },
-          body: JSON.stringify(bookingsData)
+        const res = await fetch(`${JSONBIN_BASE_URL}/${JSONBIN_BIN_ID}`, {
+          method:'PUT',
+          headers: headers(),
+          body: JSON.stringify(data)
         });
-        
-        console.log('Save status:', response.status);
-        
-        if (!response.ok) throw new Error('Save failed');
-        
+        if(!res.ok) throw new Error('Save failed');
         updateStatus('online');
-        localStorage.setItem('medleave_backup', JSON.stringify(bookingsData));
-        console.log('✅ Data saved');
+        localStorage.setItem('medleave_backup', JSON.stringify(data));
         return true;
-      } catch (error) {
-        console.error('Save failed:', error);
+      } catch(e) {
+        console.error(e);
         updateStatus('error');
-        localStorage.setItem('medleave_backup', JSON.stringify(bookingsData));
+        localStorage.setItem('medleave_backup', JSON.stringify(data));
         return false;
       }
     }
     
     async function resetStorage() {
-      if (!confirm('⚠️ Delete ALL bookings and create new storage?')) return;
-      
-      if (JSONBIN_BIN_ID) {
-        try {
-          await fetch(`${JSONBIN_BASE_URL}/${JSONBIN_BIN_ID}`, {
-            method: 'DELETE',
-            headers: { 'X-Master-Key': JSONBIN_API_KEY }
-          });
-        } catch(e) {}
+      if(!confirm('Delete all data and create new storage?')) return;
+      if(JSONBIN_BIN_ID) {
+        try { await fetch(`${JSONBIN_BASE_URL}/${JSONBIN_BIN_ID}`, {method:'DELETE', headers: headers()}); } catch(e){}
       }
-      
       localStorage.removeItem('medleave_bin_id');
       localStorage.removeItem('medleave_backup');
-      JSONBIN_BIN_ID = '';
-      allBookingsCache = {};
-      updateBinIdDisplay();
-      
+      JSONBIN_BIN_ID=''; allBookingsCache={}; updateBinIdDisplay();
       await createNewBin();
-      
-      if (currentDoctor.id) renderDashboard();
-      alert('✅ Storage reset successfully!');
+      if(currentDoctor.id) renderDashboard();
+      alert('✅ Storage reset!');
     }
     
-    function getStorageKey(year, month) {
-      return `${year}_${month}`;
-    }
+    function getKey(y,m) { return `${y}_${m}`; }
+    function getYM(d) { return {year:d.getFullYear(), month:d.getMonth()+1}; }
     
-    function getYearMonth(date) {
-      return { year: date.getFullYear(), month: date.getMonth() + 1 };
-    }
-    
-    // ==================== UI Functions ====================
-    
+    // ==================== UI ====================
     function renderDashboard() {
-      if (!currentDoctor.id) {
-        dashboardContent.style.display = 'none';
-        return;
-      }
-      dashboardContent.style.display = 'block';
+      if(!currentDoctor.id) { els.dashboard.style.display='none'; return; }
+      els.dashboard.style.display='block';
+      const {year, month} = getYM(viewDate);
+      const key = getKey(year, month);
+      const all = allBookingsCache[key] || [];
+      const mine = all.filter(b=>b.doctorId===currentDoctor.id);
+      const cnt = mine.length;
       
-      const { year, month } = getYearMonth(viewDate);
-      const key = getStorageKey(year, month);
-      const allBookings = allBookingsCache[key] || [];
-      const doctorBookings = allBookings.filter(b => b.doctorId === currentDoctor.id);
-      const bookedCount = doctorBookings.length;
-      const remaining = MAX_DAYS_PER_MONTH - bookedCount;
+      els.bookedCount.textContent = cnt;
+      els.remainingCount.textContent = Math.max(0, MAX_DAYS_PER_MONTH-cnt);
+      const mStr = viewDate.toLocaleString('en-US',{month:'long',year:'numeric'});
+      els.currentMonthLabel.textContent = mStr;
+      els.monthTitle.textContent = mStr;
+      els.listMonthLabel.textContent = viewDate.toLocaleString('en-US',{month:'long'});
       
-      bookedCountSpan.textContent = bookedCount;
-      remainingCountSpan.textContent = remaining >= 0 ? remaining : 0;
-      currentMonthLabel.textContent = formatMonthYear(viewDate);
-      monthTitle.textContent = formatMonthYear(viewDate);
-      listMonthLabel.textContent = viewDate.toLocaleString('en-US', { month: 'long' });
-      
-      renderBookedList(allBookings, doctorBookings);
-      
-      const daysInMonth = new Date(year, month, 0).getDate();
-      renderDayPicker(daysInMonth, doctorBookings.map(b => b.day), allBookings);
-      
-      const nextMonthDate = computeNextMonthDate();
-      prevMonthBtn.disabled = viewDate.getTime() <= nextMonthDate.getTime();
-      nextMonthBtn.disabled = viewDate.getTime() >= nextMonthDate.getTime();
-      
-      selectedDay = null;
-      bookingMessage.textContent = '';
-      bookingMessage.className = 'message';
-    }
-    
-    function renderBookedList(allBookings, doctorBookings) {
-      if (!allBookings || allBookings.length === 0) {
-        bookedListContainer.innerHTML = '<div style="color:#64748b; text-align:center; padding:1rem;">No days booked this month.</div>';
-        return;
-      }
-      
-      const sorted = [...allBookings].sort((a,b) => a.day - b.day);
-      let html = '';
-      sorted.forEach(booking => {
-        const isOwn = (booking.doctorId === currentDoctor.id);
-        html += `
+      // قائمة المحجوزات
+      if(all.length===0) {
+        els.bookedList.innerHTML = '<div style="color:#64748b;text-align:center;padding:1rem;">No days booked this month.</div>';
+      } else {
+        els.bookedList.innerHTML = [...all].sort((a,b)=>a.day-b.day).map(b=>`
           <div class="booked-item">
-            <div style="display:flex; align-items:center; gap:1rem;">
-              <span class="day-badge">Day ${booking.day}</span>
-              <span class="doctor-tag"><i class="fas fa-user-md" style="margin-right:4px; color:#0ea5e9;"></i>${escapeHtml(booking.doctorName)}</span>
+            <div style="display:flex;align-items:center;gap:1rem;">
+              <span class="day-badge">Day ${b.day}</span>
+              <span class="doctor-tag"><i class="fas fa-user-md" style="margin-right:4px;color:#0ea5e9;"></i>${b.doctorName.replace(/[&<>"]/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[m]))}</span>
             </div>
-            ${isOwn ? `<button class="delete-btn" data-day="${booking.day}" title="Cancel"><i class="fas fa-trash-can"></i></button>` : ''}
+            ${b.doctorId===currentDoctor.id ? `<button class="delete-btn" data-day="${b.day}"><i class="fas fa-trash-can"></i></button>` : ''}
           </div>
-        `;
-      });
-      bookedListContainer.innerHTML = html;
-      
-      document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          deleteBooking(parseInt(this.getAttribute('data-day'), 10));
+        `).join('');
+        els.bookedList.querySelectorAll('.delete-btn').forEach(btn=>{
+          btn.addEventListener('click', ()=>deleteBooking(+btn.dataset.day));
         });
-      });
-    }
-    
-    function renderDayPicker(daysInMonth, bookedDaysByMe, allBookings) {
-      let html = '';
-      for (let d = 1; d <= daysInMonth; d++) {
-        const isBookedByMe = bookedDaysByMe.includes(d);
-        const isBookedByAnyone = allBookings.some(b => b.day === d);
-        let classes = 'day-cell';
-        if (isBookedByMe) classes += ' booked';
-        else if (isBookedByAnyone) classes += ' disabled';
-        html += `<div class="${classes}" data-day="${d}">${d}</div>`;
       }
-      dayPickerContainer.innerHTML = html;
       
-      document.querySelectorAll('.day-cell:not(.booked):not(.disabled)').forEach(cell => {
-        cell.addEventListener('click', function() {
-          document.querySelectorAll('.day-cell.selected').forEach(el => el.classList.remove('selected'));
+      // منتقي الأيام
+      const dim = new Date(year, month, 0).getDate();
+      const myDays = mine.map(b=>b.day);
+      let html = '';
+      for(let d=1; d<=dim; d++) {
+        let cls = 'day-cell';
+        if(myDays.includes(d)) cls+=' booked';
+        else if(all.some(b=>b.day===d)) cls+=' disabled';
+        html += `<div class="${cls}" data-day="${d}">${d}</div>`;
+      }
+      els.dayPicker.innerHTML = html;
+      els.dayPicker.querySelectorAll('.day-cell:not(.booked):not(.disabled)').forEach(cell=>{
+        cell.addEventListener('click', function(){
+          els.dayPicker.querySelectorAll('.selected').forEach(e=>e.classList.remove('selected'));
           this.classList.add('selected');
-          selectedDay = parseInt(this.getAttribute('data-day'), 10);
-          bookingMessage.textContent = '';
-          bookingMessage.className = 'message';
+          selectedDay = +this.dataset.day;
+          els.bookingMessage.textContent='';
+          els.bookingMessage.className='message';
         });
       });
+      
+      const nm = computeNextMonthDate();
+      document.getElementById('prevMonthBtn').disabled = viewDate.getTime() <= nm.getTime();
+      document.getElementById('nextMonthBtn').disabled = viewDate.getTime() >= nm.getTime();
+      selectedDay = null;
     }
     
     async function deleteBooking(day) {
-      if (!currentDoctor.id) return;
-      const { year, month } = getYearMonth(viewDate);
-      const key = getStorageKey(year, month);
-      
-      if (!allBookingsCache[key]) allBookingsCache[key] = [];
-      allBookingsCache[key] = allBookingsCache[key].filter(b => !(b.doctorId === currentDoctor.id && b.day === day));
-      
-      const saved = await saveAllBookings(allBookingsCache);
+      if(!currentDoctor.id) return;
+      const {year,month} = getYM(viewDate);
+      const key = getKey(year,month);
+      if(!allBookingsCache[key]) allBookingsCache[key]=[];
+      allBookingsCache[key] = allBookingsCache[key].filter(b=>!(b.doctorId===currentDoctor.id && b.day===day));
+      const ok = await saveAllBookings(allBookingsCache);
       renderDashboard();
-      showMessage(saved ? `Day ${day} cancelled!` : `Cancelled (offline)`, saved ? 'success' : 'error');
+      showMsg(`Day ${day} cancelled!`, ok?'success':'error');
     }
     
     async function addBooking() {
-      if (!currentDoctor.id) { showMessage('Please login first.', 'error'); return; }
-      if (!selectedDay) { showMessage('Select a day first.', 'error'); return; }
-      
-      const { year, month } = getYearMonth(viewDate);
-      const key = getStorageKey(year, month);
-      
-      if (!allBookingsCache[key]) allBookingsCache[key] = [];
-      
-      const doctorBookings = allBookingsCache[key].filter(b => b.doctorId === currentDoctor.id);
-      if (doctorBookings.length >= MAX_DAYS_PER_MONTH) {
-        showMessage(`Maximum ${MAX_DAYS_PER_MONTH} days allowed.`, 'error');
-        return;
-      }
-      
-      if (allBookingsCache[key].some(b => b.day === selectedDay)) {
-        showMessage('This day is already booked.', 'error');
-        return;
-      }
-      
-      allBookingsCache[key].push({
-        day: selectedDay,
-        doctorId: currentDoctor.id,
-        doctorName: currentDoctor.name
-      });
-      
-      const saved = await saveAllBookings(allBookingsCache);
+      if(!currentDoctor.id) { showMsg('Please login first.','error'); return; }
+      if(!selectedDay) { showMsg('Select a day first.','error'); return; }
+      const {year,month} = getYM(viewDate);
+      const key = getKey(year,month);
+      if(!allBookingsCache[key]) allBookingsCache[key]=[];
+      const mine = allBookingsCache[key].filter(b=>b.doctorId===currentDoctor.id);
+      if(mine.length >= MAX_DAYS_PER_MONTH) { showMsg('Maximum 4 days allowed.','error'); return; }
+      if(allBookingsCache[key].some(b=>b.day===selectedDay)) { showMsg('Day already booked.','error'); return; }
+      allBookingsCache[key].push({day:selectedDay, doctorId:currentDoctor.id, doctorName:currentDoctor.name});
+      const ok = await saveAllBookings(allBookingsCache);
       renderDashboard();
-      showMessage(saved ? `Day ${selectedDay} booked!` : `Booked (offline)`, saved ? 'success' : 'error');
+      showMsg(`Day ${selectedDay} booked!`, ok?'success':'error');
     }
     
-    function showMessage(text, type) {
-      bookingMessage.textContent = text;
-      bookingMessage.className = 'message ' + type;
-      setTimeout(() => {
-        bookingMessage.textContent = '';
-        bookingMessage.className = 'message';
-      }, 4000);
-    }
-    
-    function escapeHtml(text) {
-      return String(text).replace(/[&<>"]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        if (m === '"') return '&quot;';
-        return m;
-      });
-    }
-    
-    function formatMonthYear(date) {
-      return date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    function showMsg(txt, type) {
+      els.bookingMessage.textContent = txt;
+      els.bookingMessage.className = 'message '+type;
+      setTimeout(()=>{ els.bookingMessage.textContent=''; els.bookingMessage.className='message'; }, 4000);
     }
     
     async function login() {
-      const id = doctorIdInput.value.trim();
-      const name = doctorNameInput.value.trim();
-      if (!id || !name) {
-        alert('Please enter both Employee ID and Name.');
-        return;
-      }
-      
-      console.log(`Logging in: ${id} - ${name}`);
-      currentDoctor = { id, name };
-      loginPanel.style.display = 'none';
-      userDisplay.style.display = 'flex';
-      displayNameSpan.textContent = name;
-      avatarLetter.textContent = name.charAt(0).toUpperCase();
-      
+      const id = els.doctorIdInput.value.trim();
+      const name = els.doctorNameInput.value.trim();
+      if(!id||!name) { alert('Enter Employee ID and Name.'); return; }
+      currentDoctor = {id, name};
+      els.loginPanel.style.display='none';
+      els.userDisplay.style.display='flex';
+      els.displayName.textContent = name;
+      els.avatarLetter.textContent = name.charAt(0).toUpperCase();
       await fetchAllBookings();
       viewDate = computeNextMonthDate();
       renderDashboard();
     }
     
     function logout() {
-      currentDoctor = { id: '', name: '' };
-      loginPanel.style.display = 'flex';
-      userDisplay.style.display = 'none';
-      dashboardContent.style.display = 'none';
+      currentDoctor = {id:'',name:''};
+      els.loginPanel.style.display='flex';
+      els.userDisplay.style.display='none';
+      els.dashboard.style.display='none';
       selectedDay = null;
     }
     
-    function goToPreviousMonth() {
-      const newDate = new Date(viewDate);
-      newDate.setMonth(newDate.getMonth() - 1);
-      if (newDate < computeNextMonthDate()) return;
-      viewDate = newDate;
+    function nav(dir) {
+      const d = new Date(viewDate);
+      d.setMonth(d.getMonth()+dir);
+      const nm = computeNextMonthDate();
+      if(dir<0 && d<nm) return;
+      if(dir>0 && d.getTime()>nm.getTime()) return;
+      viewDate = d;
       renderDashboard();
     }
     
-    function goToNextMonth() {
-      const newDate = new Date(viewDate);
-      newDate.setMonth(newDate.getMonth() + 1);
-      if (newDate.getTime() > computeNextMonthDate().getTime()) return;
-      viewDate = newDate;
-      renderDashboard();
-    }
+    // أحداث
+    document.getElementById('loginBtn').addEventListener('click', login);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    document.getElementById('addDayBtn').addEventListener('click', addBooking);
+    document.getElementById('prevMonthBtn').addEventListener('click', ()=>nav(-1));
+    document.getElementById('nextMonthBtn').addEventListener('click', ()=>nav(1));
+    document.getElementById('resetBtn').addEventListener('click', resetStorage);
+    els.doctorIdInput.addEventListener('keypress', e=>{ if(e.key==='Enter') login(); });
+    els.doctorNameInput.addEventListener('keypress', e=>{ if(e.key==='Enter') login(); });
     
-    // Periodic sync
-    setInterval(async () => {
-      if (currentDoctor.id) {
-        await fetchAllBookings();
-        renderDashboard();
-      }
-    }, 30000);
+    // مزامنة دورية
+    setInterval(async ()=>{ if(currentDoctor.id) { await fetchAllBookings(); renderDashboard(); } }, 30000);
     
-    // Event listeners
-    loginBtn.addEventListener('click', login);
-    logoutBtn.addEventListener('click', logout);
-    addDayBtn.addEventListener('click', addBooking);
-    prevMonthBtn.addEventListener('click', goToPreviousMonth);
-    nextMonthBtn.addEventListener('click', goToNextMonth);
-    resetBtn.addEventListener('click', resetStorage);
-    doctorIdInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
-    doctorNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
-    
-    // Initialize
-    dashboardContent.style.display = 'none';
-    userDisplay.style.display = 'none';
-    
-    console.log('🏥 MedLeave App Ready');
-    console.log('🔑 API Key:', JSONBIN_API_KEY.substring(0, 10) + '...');
-    console.log('📦 BIN ID:', JSONBIN_BIN_ID || 'Will be created on login');
-    
-    // Test API on load
-    testApiConnection().then(ok => {
-      if (ok) {
-        updateStatus('online');
-        console.log('✅ API connection OK');
-      } else {
-        updateStatus('error');
-        console.warn('⚠️ API connection failed - check key');
-      }
-    });
+    // بدء التشغيل
+    els.dashboard.style.display='none';
+    els.userDisplay.style.display='none';
+    updateStatus('online');
+    console.log('🏥 MedLeave Ready | Access Key mode');
+    console.log('📦 BIN:', JSONBIN_BIN_ID || 'will be created');
   })();
 </script>
 </body>
