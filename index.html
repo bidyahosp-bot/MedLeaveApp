@@ -236,8 +236,8 @@
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: #22c55e;
       animation: pulse 2s infinite;
@@ -540,7 +540,7 @@
   <div class="status-bar">
     <div class="status-left">
       <div class="status-dot" id="statusDot"></div>
-      <span id="statusText">Ready</span>
+      <span id="statusText">Checking connection...</span>
     </div>
     <div style="display: flex; align-items: center; gap: 0.5rem;">
       <span id="binIdDisplay" style="font-size: 0.7rem; color: #94a3b8;"></span>
@@ -588,7 +588,7 @@
     <div>
       <h4 style="font-weight:600; margin-bottom:0.3rem; display:flex; gap:0.5rem;"><i class="fas fa-list-check"></i> Booked days for <span id="listMonthLabel">June</span></h4>
       <div class="booked-list" id="bookedListContainer">
-        <div style="color:#64748b; text-align:center; padding:1rem;">Loading...</div>
+        <div style="color:#64748b; text-align:center; padding:1rem;">No days booked yet.</div>
       </div>
     </div>
 
@@ -599,7 +599,7 @@
       <span class="message" id="bookingMessage"></span>
     </div>
     <div style="font-size:0.8rem; color:#475569; margin-top:0.2rem;">
-      <i class="fas fa-info-circle"></i> You can book 1–4 days off per month. Data syncs across all devices.
+      <i class="fas fa-info-circle"></i> Book 1–4 days off per month. Data syncs across all devices via cloud.
     </div>
   </div>
 </div>
@@ -611,27 +611,22 @@
     const JSONBIN_BASE_URL = 'https://api.jsonbin.io/v3/b';
     const MAX_DAYS_PER_MONTH = 4;
     
-    // Get BIN ID from localStorage
     let JSONBIN_BIN_ID = localStorage.getItem('medleave_bin_id') || '';
-    
     let currentDoctor = { id: '', name: '' };
     let viewDate = new Date();
     let selectedDay = null;
     let allBookingsCache = {};
     
-    // Update BIN ID display
     function updateBinIdDisplay() {
       const display = document.getElementById('binIdDisplay');
       if (JSONBIN_BIN_ID) {
-        display.textContent = '📦 BIN: ' + JSONBIN_BIN_ID.substring(0, 10) + '...';
-        display.title = 'Full BIN ID: ' + JSONBIN_BIN_ID;
+        display.textContent = '📦 ' + JSONBIN_BIN_ID.substring(0, 12) + '...';
       } else {
-        display.textContent = '📦 No storage yet';
+        display.textContent = '';
       }
     }
     updateBinIdDisplay();
     
-    // Compute next month
     function computeNextMonthDate() {
       const now = new Date();
       let year = now.getFullYear();
@@ -668,7 +663,7 @@
     const statusText = document.getElementById('statusText');
     const resetBtn = document.getElementById('resetBtn');
     
-    // ==================== JSONBin API Functions ====================
+    // ==================== API Functions ====================
     
     function updateStatus(state) {
       statusDot.className = 'status-dot';
@@ -678,53 +673,57 @@
           statusText.textContent = 'Syncing...';
           break;
         case 'online':
-          statusText.textContent = 'Online - Server connected';
+          statusText.textContent = 'Online - Cloud connected';
           break;
         case 'creating':
           statusDot.classList.add('creating');
-          statusText.textContent = 'Creating storage...';
+          statusText.textContent = 'Creating cloud storage...';
           break;
         case 'offline':
           statusDot.classList.add('offline');
-          statusText.textContent = 'Offline mode';
+          statusText.textContent = 'Offline - Using local storage';
           break;
         case 'error':
           statusDot.classList.add('offline');
-          statusText.textContent = 'Connection error';
+          statusText.textContent = 'Connection error - Check API key';
           break;
         default:
-          statusText.textContent = 'Ready';
+          statusText.textContent = 'Checking...';
       }
     }
     
     async function testApiConnection() {
       try {
-        const response = await fetch(`${JSONBIN_BASE_URL}/test`, {
+        const response = await fetch('https://api.jsonbin.io/v3/b/latest', {
+          method: 'HEAD',
           headers: { 'X-Master-Key': JSONBIN_API_KEY }
         });
-        return response.ok;
+        console.log('API test status:', response.status);
+        return response.status !== 401 && response.status !== 403;
       } catch (e) {
+        console.error('API test failed:', e);
         return false;
       }
     }
     
     async function fetchAllBookings() {
       if (!JSONBIN_BIN_ID) {
-        console.log('No BIN ID, creating new storage...');
+        console.log('No BIN ID, creating new...');
         return await createNewBin();
       }
       
       updateStatus('syncing');
+      
       try {
         const response = await fetch(`${JSONBIN_BASE_URL}/${JSONBIN_BIN_ID}/latest`, {
-          headers: { 
-            'X-Master-Key': JSONBIN_API_KEY 
-          }
+          method: 'GET',
+          headers: { 'X-Master-Key': JSONBIN_API_KEY }
         });
         
-        // If 404, BIN doesn't exist - create new one
+        console.log('Fetch status:', response.status);
+        
         if (response.status === 404) {
-          console.log('BIN not found (404), creating new storage...');
+          console.log('BIN not found, creating new...');
           localStorage.removeItem('medleave_bin_id');
           JSONBIN_BIN_ID = '';
           updateBinIdDisplay();
@@ -732,69 +731,74 @@
         }
         
         if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          const text = await response.text();
+          console.error('Fetch error:', text);
+          throw new Error(`HTTP ${response.status}`);
         }
         
         const data = await response.json();
         allBookingsCache = data.record || {};
         updateStatus('online');
-        console.log('✅ Data loaded successfully');
+        console.log('✅ Data loaded. Months:', Object.keys(allBookingsCache).length);
         return allBookingsCache;
       } catch (error) {
-        console.error('Fetch error:', error.message);
+        console.error('Fetch failed:', error);
+        updateStatus('error');
         
-        // If network error, try to use backup
         const backup = localStorage.getItem('medleave_backup');
         if (backup) {
           try {
             allBookingsCache = JSON.parse(backup);
             updateStatus('offline');
-            console.log('⚠️ Using local backup');
             return allBookingsCache;
           } catch(e) {}
         }
-        
-        updateStatus('error');
         return allBookingsCache;
       }
     }
     
     async function createNewBin() {
       updateStatus('creating');
+      console.log('Creating new BIN...');
+      
       try {
-        const initialData = {};
         const response = await fetch(JSONBIN_BASE_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'X-Master-Key': JSONBIN_API_KEY,
-            'X-Bin-Name': 'medleave-bookings-' + Date.now()
+            'X-Bin-Name': 'medleave-bookings'
           },
-          body: JSON.stringify(initialData)
+          body: JSON.stringify({})
         });
         
+        console.log('Create status:', response.status);
+        const responseText = await response.text();
+        console.log('Create response:', responseText.substring(0, 200));
+        
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Create bin failed:', errorText);
-          throw new Error(`Failed to create bin: ${response.status}`);
+          if (response.status === 401 || response.status === 403) {
+            alert('❌ API Key Error!\n\nThe API key is invalid or unauthorized.\n\nPlease:\n1. Go to https://jsonbin.io\n2. Sign in\n3. Create a new API Key\n4. Update the code');
+          } else if (response.status === 400) {
+            alert('❌ Bad Request (400)\n\nPossible causes:\n- Invalid API key format\n- Account not verified\n\nPlease check your JSONBin account.');
+          }
+          throw new Error(`Create failed: ${response.status}`);
         }
         
-        const data = await response.json();
+        const data = JSON.parse(responseText);
         JSONBIN_BIN_ID = data.metadata.id;
         
-        // Save BIN ID permanently
         localStorage.setItem('medleave_bin_id', JSONBIN_BIN_ID);
         updateBinIdDisplay();
         
-        console.log('✅ New BIN created:', JSONBIN_BIN_ID);
-        allBookingsCache = initialData;
+        console.log('✅ BIN created:', JSONBIN_BIN_ID);
+        allBookingsCache = {};
         updateStatus('online');
         
         return allBookingsCache;
       } catch (error) {
-        console.error('Create bin error:', error);
+        console.error('Create failed:', error);
         updateStatus('error');
-        alert('❌ Failed to create storage.\n\nPlease check:\n1. Your internet connection\n2. That the API key is correct\n\nError: ' + error.message);
         return allBookingsCache;
       }
     }
@@ -806,6 +810,7 @@
       }
       
       updateStatus('syncing');
+      
       try {
         const response = await fetch(`${JSONBIN_BASE_URL}/${JSONBIN_BIN_ID}`, {
           method: 'PUT',
@@ -816,14 +821,16 @@
           body: JSON.stringify(bookingsData)
         });
         
-        if (!response.ok) throw new Error('Failed to save');
+        console.log('Save status:', response.status);
+        
+        if (!response.ok) throw new Error('Save failed');
         
         updateStatus('online');
         localStorage.setItem('medleave_backup', JSON.stringify(bookingsData));
-        console.log('✅ Data saved successfully');
+        console.log('✅ Data saved');
         return true;
       } catch (error) {
-        console.error('Save error:', error);
+        console.error('Save failed:', error);
         updateStatus('error');
         localStorage.setItem('medleave_backup', JSON.stringify(bookingsData));
         return false;
@@ -831,35 +838,27 @@
     }
     
     async function resetStorage() {
-      if (!confirm('⚠️ This will delete ALL bookings and create new storage. Continue?')) return;
+      if (!confirm('⚠️ Delete ALL bookings and create new storage?')) return;
       
-      // Delete old BIN if exists
       if (JSONBIN_BIN_ID) {
         try {
           await fetch(`${JSONBIN_BASE_URL}/${JSONBIN_BIN_ID}`, {
             method: 'DELETE',
             headers: { 'X-Master-Key': JSONBIN_API_KEY }
           });
-        } catch(e) {
-          console.log('Could not delete old BIN:', e);
-        }
+        } catch(e) {}
       }
       
-      // Clear local data
       localStorage.removeItem('medleave_bin_id');
       localStorage.removeItem('medleave_backup');
       JSONBIN_BIN_ID = '';
       allBookingsCache = {};
       updateBinIdDisplay();
       
-      // Create new storage
       await createNewBin();
       
-      if (currentDoctor.id) {
-        renderDashboard();
-      }
-      
-      alert('✅ Storage reset successfully! New BIN created.');
+      if (currentDoctor.id) renderDashboard();
+      alert('✅ Storage reset successfully!');
     }
     
     function getStorageKey(year, month) {
@@ -898,11 +897,8 @@
       renderDayPicker(daysInMonth, doctorBookings.map(b => b.day), allBookings);
       
       const nextMonthDate = computeNextMonthDate();
-      const viewTime = viewDate.getTime();
-      const nextMonthTime = nextMonthDate.getTime();
-      
-      prevMonthBtn.disabled = viewTime <= nextMonthTime;
-      nextMonthBtn.disabled = viewTime >= nextMonthTime;
+      prevMonthBtn.disabled = viewDate.getTime() <= nextMonthDate.getTime();
+      nextMonthBtn.disabled = viewDate.getTime() >= nextMonthDate.getTime();
       
       selectedDay = null;
       bookingMessage.textContent = '';
@@ -925,16 +921,15 @@
               <span class="day-badge">Day ${booking.day}</span>
               <span class="doctor-tag"><i class="fas fa-user-md" style="margin-right:4px; color:#0ea5e9;"></i>${escapeHtml(booking.doctorName)}</span>
             </div>
-            ${isOwn ? `<button class="delete-btn" data-day="${booking.day}" title="Cancel booking"><i class="fas fa-trash-can"></i></button>` : ''}
+            ${isOwn ? `<button class="delete-btn" data-day="${booking.day}" title="Cancel"><i class="fas fa-trash-can"></i></button>` : ''}
           </div>
         `;
       });
       bookedListContainer.innerHTML = html;
       
       document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          const day = parseInt(this.getAttribute('data-day'), 10);
-          deleteBooking(day);
+        btn.addEventListener('click', function() {
+          deleteBooking(parseInt(this.getAttribute('data-day'), 10));
         });
       });
     }
@@ -945,21 +940,17 @@
         const isBookedByMe = bookedDaysByMe.includes(d);
         const isBookedByAnyone = allBookings.some(b => b.day === d);
         let classes = 'day-cell';
-        if (isBookedByMe) {
-          classes += ' booked';
-        } else if (isBookedByAnyone) {
-          classes += ' disabled';
-        }
+        if (isBookedByMe) classes += ' booked';
+        else if (isBookedByAnyone) classes += ' disabled';
         html += `<div class="${classes}" data-day="${d}">${d}</div>`;
       }
       dayPickerContainer.innerHTML = html;
       
       document.querySelectorAll('.day-cell:not(.booked):not(.disabled)').forEach(cell => {
         cell.addEventListener('click', function() {
-          const day = parseInt(this.getAttribute('data-day'), 10);
           document.querySelectorAll('.day-cell.selected').forEach(el => el.classList.remove('selected'));
           this.classList.add('selected');
-          selectedDay = day;
+          selectedDay = parseInt(this.getAttribute('data-day'), 10);
           bookingMessage.textContent = '';
           bookingMessage.className = 'message';
         });
@@ -976,18 +967,12 @@
       
       const saved = await saveAllBookings(allBookingsCache);
       renderDashboard();
-      showMessage(saved ? `Day ${day} cancelled!` : `Day ${day} cancelled (offline)`, saved ? 'success' : 'error');
+      showMessage(saved ? `Day ${day} cancelled!` : `Cancelled (offline)`, saved ? 'success' : 'error');
     }
     
     async function addBooking() {
-      if (!currentDoctor.id) {
-        showMessage('Please login first.', 'error');
-        return;
-      }
-      if (!selectedDay) {
-        showMessage('Select a day first.', 'error');
-        return;
-      }
+      if (!currentDoctor.id) { showMessage('Please login first.', 'error'); return; }
+      if (!selectedDay) { showMessage('Select a day first.', 'error'); return; }
       
       const { year, month } = getYearMonth(viewDate);
       const key = getStorageKey(year, month);
@@ -995,7 +980,6 @@
       if (!allBookingsCache[key]) allBookingsCache[key] = [];
       
       const doctorBookings = allBookingsCache[key].filter(b => b.doctorId === currentDoctor.id);
-      
       if (doctorBookings.length >= MAX_DAYS_PER_MONTH) {
         showMessage(`Maximum ${MAX_DAYS_PER_MONTH} days allowed.`, 'error');
         return;
@@ -1014,7 +998,7 @@
       
       const saved = await saveAllBookings(allBookingsCache);
       renderDashboard();
-      showMessage(saved ? `Day ${selectedDay} booked!` : `Day ${selectedDay} booked (offline)`, saved ? 'success' : 'error');
+      showMessage(saved ? `Day ${selectedDay} booked!` : `Booked (offline)`, saved ? 'success' : 'error');
     }
     
     function showMessage(text, type) {
@@ -1048,13 +1032,13 @@
         return;
       }
       
+      console.log(`Logging in: ${id} - ${name}`);
       currentDoctor = { id, name };
       loginPanel.style.display = 'none';
       userDisplay.style.display = 'flex';
       displayNameSpan.textContent = name;
       avatarLetter.textContent = name.charAt(0).toUpperCase();
       
-      // Fetch data from server
       await fetchAllBookings();
       viewDate = computeNextMonthDate();
       renderDashboard();
@@ -1071,8 +1055,7 @@
     function goToPreviousMonth() {
       const newDate = new Date(viewDate);
       newDate.setMonth(newDate.getMonth() - 1);
-      const nextMonthDate = computeNextMonthDate();
-      if (newDate < nextMonthDate) return;
+      if (newDate < computeNextMonthDate()) return;
       viewDate = newDate;
       renderDashboard();
     }
@@ -1080,13 +1063,12 @@
     function goToNextMonth() {
       const newDate = new Date(viewDate);
       newDate.setMonth(newDate.getMonth() + 1);
-      const nextMonthDate = computeNextMonthDate();
-      if (newDate.getTime() > nextMonthDate.getTime()) return;
+      if (newDate.getTime() > computeNextMonthDate().getTime()) return;
       viewDate = newDate;
       renderDashboard();
     }
     
-    // Periodic sync every 30 seconds
+    // Periodic sync
     setInterval(async () => {
       if (currentDoctor.id) {
         await fetchAllBookings();
@@ -1107,21 +1089,21 @@
     // Initialize
     dashboardContent.style.display = 'none';
     userDisplay.style.display = 'none';
-    updateStatus('online');
-    
-    // Test connection on load
-    testApiConnection().then(ok => {
-      if (ok) {
-        console.log('✅ API connection OK');
-        updateStatus('online');
-      } else {
-        console.warn('⚠️ Cannot reach API');
-        updateStatus('offline');
-      }
-    });
     
     console.log('🏥 MedLeave App Ready');
-    console.log('📦 BIN ID:', JSONBIN_BIN_ID || 'Will be created on first login');
+    console.log('🔑 API Key:', JSONBIN_API_KEY.substring(0, 10) + '...');
+    console.log('📦 BIN ID:', JSONBIN_BIN_ID || 'Will be created on login');
+    
+    // Test API on load
+    testApiConnection().then(ok => {
+      if (ok) {
+        updateStatus('online');
+        console.log('✅ API connection OK');
+      } else {
+        updateStatus('error');
+        console.warn('⚠️ API connection failed - check key');
+      }
+    });
   })();
 </script>
 </body>
