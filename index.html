@@ -202,10 +202,12 @@
 
 <script>
 (function(){
-  // ⚠️ استبدل هذا الرابط برابط النشر الخاص بك
+  /* ==========================================================
+     ⚠️ ضع هنا رابط النشر /exec من Apps Script
+     ========================================================== */
   const API_URL = 'https://script.google.com/macros/s/AKfycbxWJ-otHIsiy-kXwDQua2AGB9V7Kiw8qnibcvhAG0X09RfHJ7yNesh8LMklzqAjaK5Z/exec';
 
-  let session = null; // { role, staffNo, name, institution }
+  let session = null;
   let viewDate = new Date();
   let selectedDay = null;
   let dashboardData = { bookings: [], myBookings: [], minDays: 2, maxDays: 3, doctors: [] };
@@ -217,29 +219,33 @@
   }
   const MAX_MONTH = nextMonth();
 
-  /* ---------- API ---------- */
   function setStatus(s){
     const dot=document.getElementById('statusDot'), txt=document.getElementById('statusText');
     dot.className='status-dot '+(s==='syncing'?'syncing':s==='offline'?'offline':'');
     txt.textContent = s==='syncing'?'Syncing...':s==='offline'?'Offline':'Connected';
   }
 
+  /* ==========================================================
+     ⚠️ مهم: Content-Type يجب أن يكون text/plain
+     لتجنب CORS preflight (OPTIONS) الذي لا يدعمه Apps Script
+     ========================================================== */
   async function api(action, payload){
     setStatus('syncing');
     try {
       const res = await fetch(API_URL, {
-        method:'POST',
-        // text/plain يتجنب CORS preflight
-        headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body: JSON.stringify({ action, ...payload })
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, ...payload }),
+        redirect: 'follow'
       });
+      if(!res.ok) throw new Error('HTTP '+res.status);
       const data = await res.json();
       setStatus('online');
       return data;
     } catch(e){
-      console.error(e);
+      console.error('[API error]', e);
       setStatus('offline');
-      return { ok:false, error:'Connection error' };
+      return { ok:false, error: 'Connection error — check your internet / Apps Script deployment.' };
     }
   }
 
@@ -260,14 +266,12 @@
     document.getElementById('adminActions').style.display = r.role==='admin' ? 'flex' : 'none';
     document.getElementById('doctorActions').style.display = r.role==='doctor' ? 'flex' : 'none';
 
-    // إشعارات
     if(r.notifications && r.notifications.length){
       renderNotifications(r.notifications);
     } else {
       document.getElementById('notifArea').innerHTML='';
     }
 
-    // عرض الشهر القادم افتراضياً
     viewDate = new Date(MAX_MONTH);
     await loadDashboard();
   };
@@ -309,7 +313,6 @@
   }
 
   function render(){
-    const ym = getYM(viewDate);
     const all = dashboardData.bookings || [];
     const mine = session.role==='doctor'
       ? all.filter(b=>b.staffNo===session.staffNo)
@@ -324,7 +327,6 @@
     document.getElementById('monthTitle').textContent = label;
     document.getElementById('listMonthLabel').textContent = viewDate.toLocaleString('en-US',{month:'long'});
 
-    // قائمة الحجوزات
     const list = document.getElementById('bookedListContainer');
     if(!all.length){
       list.innerHTML = '<div style="color:#64748b;text-align:center;padding:1rem;">No days booked this month.</div>';
@@ -336,11 +338,9 @@
             <span style="color:#334155;margin-left:.5rem;">${esc(b.doctorName)}</span>
             <span style="color:#94a3b8;font-size:.7rem;margin-left:.4rem;">#${esc(b.staffNo)}</span>
           </span>
-          ${session.role==='doctor' && b.staffNo===session.staffNo
+          ${(session.role==='doctor' && b.staffNo===session.staffNo) || session.role==='admin'
             ? `<button class="delete-btn" data-id="${b.id}"><i class="fas fa-trash-can"></i></button>`
-            : session.role==='admin'
-              ? `<button class="delete-btn" data-id="${b.id}"><i class="fas fa-trash-can"></i></button>`
-              : ''}
+            : ''}
         </div>`).join('');
 
       list.querySelectorAll('.delete-btn').forEach(btn=>{
@@ -355,7 +355,6 @@
       });
     }
 
-    // منتقي الأيام (للأطباء فقط)
     const picker = document.getElementById('dayPickerContainer');
     if(session.role==='doctor'){
       const year = viewDate.getFullYear();
@@ -383,8 +382,6 @@
     }
 
     selectedDay = null;
-
-    // حدود التنقل بين الشهور
     document.getElementById('prevMonthBtn').disabled = viewDate <= MAX_MONTH;
     document.getElementById('nextMonthBtn').disabled = viewDate >= MAX_MONTH;
   }
@@ -416,7 +413,6 @@
     else showMsg(r.error||'Export failed','error');
   };
 
-  /* ---------- Utils ---------- */
   function showMsg(t, c){
     const m = document.getElementById('bookingMessage');
     m.textContent = t;
