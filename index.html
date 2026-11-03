@@ -266,6 +266,7 @@
     session = r;
     document.getElementById('loginPanel').style.display='none';
     document.getElementById('userDisplay').style.display='flex';
+    document.getElementById('dashboardContent').style.display = 'block';
     document.getElementById('displayName').textContent = r.name;
     document.getElementById('avatarLetter').textContent = (r.name||'?').charAt(0).toUpperCase();
     document.getElementById('adminActions').style.display = r.role==='admin' ? 'flex' : 'none';
