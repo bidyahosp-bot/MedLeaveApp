@@ -202,7 +202,7 @@
 
 <script>
 (function(){
-  /* ⚠️ تأكد أن هذا الرابط هو رابط النشر الحالي (ينتهي بـ /exec) */
+  // ⚠️ هذا هو رابط النشر الخاص بك (الذي أثبت نجاحه في الصورة)
   const API_URL = 'https://script.google.com/macros/s/AKfycbz1m8Pk8t_wopbtFhV06UL9iq4oqXE4h7Q3COkrgTlcUTCLzIAqHozp_qJ5YrFq4lub/exec';
 
   let session = null;
@@ -223,31 +223,31 @@
     txt.textContent = s==='syncing'?'Syncing...':s==='offline'?'Offline':'Connected';
   }
 
+  // دالة الاتصال المحسّنة
   async function api(action, payload){
     setStatus('syncing');
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action, ...payload }),
-        redirect: 'follow'
+        body: JSON.stringify({ action, ...payload })
       });
-      if(!res.ok) throw new Error('HTTP status: ' + res.status);
       
-      const text = await res.text(); // نقرأ النص أولاً للتشخيص
+      const text = await res.text(); 
+      let data;
       try {
-        const data = JSON.parse(text);
-        setStatus('online');
-        return data;
-      } catch(jsonErr) {
-        console.error('الرد ليس JSON. الرد الفعلي كان:', text);
-        throw new Error('Invalid JSON response from server. Check console.');
+        data = JSON.parse(text);
+      } catch(e) {
+        console.error("الرد ليس بصيغة JSON. تأكد من إعدادات النشر:", text);
+        throw new Error("Server returned HTML instead of JSON. Check deployment.");
       }
+      
+      setStatus('online');
+      return data;
     } catch(e){
       console.error('[API error]', e);
       setStatus('offline');
-      // إظهار الخطأ في الشاشة
-      alert('خطأ في الاتصال:\n' + e.message);
+      alert('فشل الاتصال بالخادم. تأكد من الإنترنت أو أعد نشر Apps Script كـ Web App.');
       return { ok:false, error: e.message };
     }
   }
@@ -259,10 +259,8 @@
 
     const r = await api('login', { staffNo, password });
     
-    // التشخيص: إذا لم يعمل، نطبع ما وصلنا
     if(!r || !r.ok) {
-       console.warn('Login failed:', r);
-       return showMsg(r?.error || 'Login failed (see console)', 'error');
+       return showMsg(r?.error || 'Login failed', 'error');
     }
 
     session = r;
@@ -313,7 +311,6 @@
       staffNo: session.staffNo, yearMonth: ym, role: session.role
     });
     if(!r.ok) {
-        console.warn('Dashboard load failed:', r);
         return showMsg(r.error,'error');
     }
     dashboardData = r;
@@ -423,10 +420,10 @@
 
   function showMsg(t, c){
     const m = document.getElementById('bookingMessage');
-    if(!m) return; // في حال عدم وجود العنصر
+    if(!m) return;
     m.textContent = t;
     m.className = 'message show ' + c;
-    setTimeout(()=>{ m.classList.remove('show'); }, 3000);
+    setTimeout(()=>{ m.classList.remove('show'); }, 4000);
   }
   function esc(t){ return String(t).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 
