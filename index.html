@@ -2,142 +2,133 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>MedLeave | Doctor Day‑Off Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedLeave | Bidiya Hospital</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #f0f6fc 0%, #e2ecf5 100%);
-      display: flex; justify-content: center; align-items: center;
-      min-height: 100vh; padding: 1.5rem; color: #1e293b;
+      font-family:'Inter',-apple-system,sans-serif;
+      background:linear-gradient(135deg,#f0f6fc,#e2ecf5);
+      min-height:100vh; padding:1.5rem; color:#1e293b;
+      display:flex; justify-content:center; align-items:flex-start;
     }
     .app-container {
-      max-width: 1100px; width: 100%; background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px); border-radius: 2.5rem;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); padding: 2rem;
-      display: flex; flex-direction: column; gap: 1.5rem;
+      max-width:1100px; width:100%; background:rgba(255,255,255,.95);
+      backdrop-filter:blur(20px); border-radius:2rem; padding:2rem;
+      box-shadow:0 25px 50px -12px rgba(0,0,0,.15);
+      display:flex; flex-direction:column; gap:1.5rem;
     }
-    .top-section { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
-    .logo-area { display: flex; align-items: center; gap: 0.7rem; }
+    .top-section { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:1rem; }
+    .logo-area { display:flex; align-items:center; gap:.7rem; }
     .logo-icon {
-      background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white;
-      width: 48px; height: 48px; border-radius: 18px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem; box-shadow: 0 12px 20px -10px rgba(14,165,233,0.4);
+      background:linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff;
+      width:48px; height:48px; border-radius:16px;
+      display:flex; align-items:center; justify-content:center; font-size:1.5rem;
+      box-shadow:0 12px 20px -10px rgba(14,165,233,.4);
     }
-    .logo-text {
-      font-weight: 700; font-size: 1.7rem;
-      background: linear-gradient(135deg, #0369a1, #0c4a6e);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    .logo-text { font-size:1.7rem; font-weight:700;
+      background:linear-gradient(135deg,#0369a1,#0c4a6e);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
     }
-    .logo-text span { font-weight: 500; }
+    .logo-text span { font-weight:500; }
     .login-card {
-      background: #f8fafc; border-radius: 2rem; padding: 0.8rem 1.5rem;
-      display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+      background:#f8fafc; border-radius:2rem; padding:.8rem 1.5rem;
+      display:flex; flex-wrap:wrap; align-items:center; gap:.7rem;
+      box-shadow:0 4px 12px rgba(0,0,0,.05); border:1px solid #e2e8f0;
     }
     .input-group {
-      display: flex; align-items: center; gap: 0.5rem;
-      background: white; border-radius: 2.5rem; padding: 0.4rem 1rem;
-      border: 1px solid #dce3eb;
+      display:flex; align-items:center; gap:.5rem;
+      background:#fff; border-radius:2.5rem; padding:.4rem 1rem;
+      border:1px solid #dce3eb;
     }
-    .input-group i { color: #5b7c9b; font-size: 0.9rem; }
+    .input-group i { color:#5b7c9b; font-size:.9rem; }
     .input-group input {
-      border: none; background: transparent; padding: 0.5rem 0.2rem;
-      font-size: 0.9rem; font-weight: 500; width: 120px; outline: none; color: #0f172a;
+      border:none; background:transparent; padding:.5rem .2rem;
+      font-size:.9rem; font-weight:500; width:120px; outline:none; color:#0f172a;
     }
     .btn {
-      border: none; border-radius: 2.5rem; padding: 0.6rem 1.5rem;
-      font-weight: 600; font-size: 0.9rem; cursor: pointer;
-      background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white;
-      box-shadow: 0 8px 18px -6px rgba(14,165,233,0.5);
-      display: flex; align-items: center; gap: 0.4rem; transition: 0.3s;
+      border:none; border-radius:2.5rem; padding:.6rem 1.5rem;
+      font-weight:600; font-size:.9rem; cursor:pointer;
+      background:linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff;
+      box-shadow:0 8px 18px -6px rgba(14,165,233,.5);
+      display:inline-flex; align-items:center; gap:.4rem; transition:.3s;
     }
-    .btn:hover { transform: translateY(-2px); }
-    .btn-outline { background: white; color: #0369a1; border: 1px solid #cbd5e1; box-shadow: none; }
-    .btn-sm { padding: 0.4rem 1rem; font-size: 0.8rem; }
-    .user-welcome {
-      display: flex; align-items: center; gap: 0.7rem;
-      background: #e0f2fe; border-radius: 3rem; padding: 0.3rem 1.2rem 0.3rem 0.3rem;
-    }
+    .btn:hover { transform:translateY(-2px); }
+    .btn-outline { background:#fff; color:#0369a1; border:1px solid #cbd5e1; box-shadow:none; }
+    .btn-sm { padding:.4rem 1rem; font-size:.8rem; }
+    .user-welcome { display:flex; align-items:center; gap:.7rem;
+      background:#e0f2fe; border-radius:3rem; padding:.3rem 1.2rem .3rem .3rem; }
     .avatar {
-      background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white;
-      width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-weight: 700;
+      background:linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff;
+      width:36px; height:36px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center; font-weight:700;
     }
     .status-bar {
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 0.8rem; background: #f8fafc; border-radius: 1rem; padding: 0.5rem 1rem;
+      display:flex; justify-content:space-between; align-items:center;
+      font-size:.8rem; background:#f8fafc; border-radius:1rem; padding:.5rem 1rem;
     }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; }
+    .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;background:#22c55e;}
+    .status-dot.syncing{background:#f59e0b;}
+    .status-dot.offline{background:#ef4444;}
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:1rem; }
     .stat-card {
-      background: #f9fcff; border-radius: 1.5rem; padding: 1.2rem;
-      box-shadow: 0 8px 20px -8px rgba(0,32,64,0.08); border: 1px solid #eef3f9;
-      display: flex; align-items: center; justify-content: space-between;
+      background:#f9fcff; border-radius:1.5rem; padding:1.2rem;
+      box-shadow:0 8px 20px -8px rgba(0,32,64,.08); border:1px solid #eef3f9;
+      display:flex; align-items:center; justify-content:space-between;
     }
-    .stat-info h4 { font-size: 0.8rem; text-transform: uppercase; color: #51718c; margin-bottom: 0.3rem; }
+    .stat-info h4 { font-size:.8rem; text-transform:uppercase; color:#51718c; margin-bottom:.3rem; }
     .stat-number {
-      font-size: 2rem; font-weight: 700;
-      background: linear-gradient(135deg, #0369a1, #0c4a6e);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      font-size:2rem; font-weight:700;
+      background:linear-gradient(135deg,#0369a1,#0c4a6e);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
     }
-    .stat-icon { font-size: 1.8rem; color: #0ea5e9; opacity: 0.5; }
+    .stat-icon { font-size:1.8rem; color:#0ea5e9; opacity:.5; }
     .month-selector {
-      display: flex; align-items: center; justify-content: space-between;
-      background: #f0f4fa; border-radius: 2.5rem; padding: 0.5rem 1.2rem;
+      display:flex; align-items:center; justify-content:space-between;
+      background:#f0f4fa; border-radius:2.5rem; padding:.5rem 1.2rem;
     }
-    .month-title { font-weight: 700; font-size: 1.2rem; color: #0c4a6e; }
+    .month-title { font-weight:700; font-size:1.2rem; color:#0c4a6e; }
     .nav-arrow {
-      background: white; border: none; border-radius: 50%; width: 36px; height: 36px;
-      cursor: pointer; font-size: 1rem; box-shadow: 0 5px 12px rgba(0,0,0,0.05);
+      background:#fff; border:none; border-radius:50%; width:36px; height:36px;
+      cursor:pointer; font-size:1rem; box-shadow:0 5px 12px rgba(0,0,0,.05);
     }
-    .nav-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+    .nav-arrow:disabled { opacity:.3; cursor:not-allowed; }
     .booked-list {
-      background: #f8fafc; border-radius: 1.5rem; padding: 1rem 1.5rem;
-      border: 1px solid #e9f0f7; max-height: 200px; overflow-y: auto;
+      background:#f8fafc; border-radius:1.5rem; padding:1rem 1.5rem;
+      border:1px solid #e9f0f7; max-height:220px; overflow-y:auto;
     }
     .booked-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.6rem 0; border-bottom: 1px solid #e2e8f0;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:.6rem 0; border-bottom:1px solid #e2e8f0;
     }
-    .booked-item:last-child { border-bottom: none; }
-    .day-badge { background: #dbeafe; color: #1e3a8a; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 2rem; font-size: 0.85rem; }
-    .delete-btn { color: #ef4444; cursor: pointer; opacity: 0.7; background: none; border: none; font-size: 1rem; }
-    .delete-btn:hover { opacity: 1; }
-    .action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
-    .day-picker { display: flex; flex-wrap: wrap; gap: 0.4rem; background: #fff; padding: 0.8rem; border-radius: 1.5rem; border: 1px solid #dce5ef; }
+    .booked-item:last-child { border-bottom:none; }
+    .day-badge { background:#dbeafe; color:#1e3a8a; font-weight:700; padding:.3rem .8rem; border-radius:2rem; font-size:.85rem; }
+    .delete-btn { color:#ef4444; cursor:pointer; opacity:.7; background:none; border:none; font-size:1rem; }
+    .delete-btn:hover { opacity:1; }
+    .action-row { display:flex; flex-wrap:wrap; align-items:center; gap:1rem; }
+    .day-picker { display:flex; flex-wrap:wrap; gap:.4rem; background:#fff; padding:.8rem; border-radius:1.5rem; border:1px solid #dce5ef; }
     .day-cell {
-      width: 36px; height: 36px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 600; background: #f1f5f9; cursor: pointer; font-size: 0.85rem; transition: 0.2s;
+      width:36px; height:36px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:600; background:#f1f5f9; cursor:pointer; font-size:.85rem; transition:.2s;
     }
-    .day-cell:hover:not(.booked):not(.disabled) { background: #e0f2fe; transform: scale(1.1); }
-    .day-cell.selected { background: #0ea5e9; color: white; transform: scale(1.1); }
-    .day-cell.booked { background: #fecaca; color: #7f1d1d; cursor: not-allowed; text-decoration: line-through; }
-    .day-cell.disabled { opacity: 0.5; pointer-events: none; }
-    .message { font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 1rem; }
-    .message.success { color: #059669; background: #d1fae5; }
-    .message.error { color: #dc2626; background: #fee2e2; }
-    @media (max-width: 650px) {
-      .app-container { padding: 1.2rem; }
-      .login-card { flex-direction: column; }
+    .day-cell:hover:not(.booked):not(.disabled) { background:#e0f2fe; transform:scale(1.1); }
+    .day-cell.selected { background:#0ea5e9; color:#fff; transform:scale(1.1); }
+    .day-cell.booked { background:#fecaca; color:#7f1d1d; cursor:not-allowed; text-decoration:line-through; }
+    .day-cell.disabled { opacity:.5; pointer-events:none; }
+    .message { font-size:.85rem; padding:.5rem 1rem; border-radius:1rem; display:none; }
+    .message.show { display:inline-block; }
+    .message.success { color:#059669; background:#d1fae5; }
+    .message.error { color:#dc2626; background:#fee2e2; }
+    .notif-banner { background:#fef3c7; border:1px solid #fcd34d; border-radius:1rem; padding:.8rem 1rem; font-size:.85rem; }
+    .notif-banner button { background:none; border:none; color:#92400e; cursor:pointer; float:right; font-weight:600; }
+    @media (max-width:650px) {
+      .app-container { padding:1.2rem; }
+      .login-card { flex-direction:column; align-items:stretch; }
     }
-    .status-dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  display:inline-block;
-  margin-right:6px;
-  background:#22c55e;
-}
-.status-dot.syncing{
-  background:#f59e0b;
-}
   </style>
 </head>
 <body>
@@ -150,27 +141,29 @@
     <div id="loginPanel" class="login-card">
       <div class="input-group">
         <i class="fas fa-id-badge"></i>
-        <input type="text" id="doctorIdInput" placeholder="Employee ID" value="DOC123">
+        <input type="text" id="staffInput" placeholder="Employee ID">
       </div>
       <div class="input-group">
-        <i class="fas fa-user-md"></i>
-        <input type="text" id="doctorNameInput" placeholder="Full name" value="Dr. Smith">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="passInput" placeholder="Password (admin)">
       </div>
       <button class="btn" id="loginBtn"><i class="fas fa-right-to-bracket"></i> Login</button>
     </div>
-    <div id="userDisplay" style="display: none;" class="user-welcome">
-      <div class="avatar" id="avatarLetter">S</div>
-      <span class="doctor-name" id="displayName">Dr. Smith</span>
+    <div id="userDisplay" style="display:none;" class="user-welcome">
+      <div class="avatar" id="avatarLetter">?</div>
+      <span id="displayName">-</span>
       <button class="btn btn-outline btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </div>
 
   <div class="status-bar">
-    <span><span class="status-dot" id="statusDot"></span><span id="statusText">Connecting...</span></span>
-    <span style="font-size:0.7rem;color:#94a3b8;">📊 Google Sheets</span>
+    <span><span class="status-dot" id="statusDot"></span><span id="statusText">Ready</span></span>
+    <span style="font-size:.7rem;color:#94a3b8;">📊 Google Sheets</span>
   </div>
 
-  <div id="dashboardContent" style="display: none;">
+  <div id="notifArea"></div>
+
+  <div id="dashboardContent" style="display:none;">
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-info"><h4>Month</h4><div class="stat-number" id="currentMonthLabel">-</div></div>
@@ -181,258 +174,258 @@
         <i class="fas fa-bookmark stat-icon"></i>
       </div>
       <div class="stat-card">
-        <div class="stat-info"><h4>Remaining</h4><div class="stat-number" id="remainingCount">4</div></div>
+        <div class="stat-info"><h4>Remaining</h4><div class="stat-number" id="remainingCount">0</div></div>
         <i class="fas fa-hourglass-half stat-icon"></i>
       </div>
     </div>
 
     <div class="month-selector">
-      <button class="nav-arrow" id="prevMonthBtn" disabled><i class="fas fa-chevron-left"></i></button>
-      <div class="month-title"><span id="monthTitle">-</span></div>
+      <button class="nav-arrow" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+      <div class="month-title" id="monthTitle">-</div>
       <button class="nav-arrow" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
     </div>
 
     <h4 style="font-weight:600;"><i class="fas fa-list-check"></i> Booked days: <span id="listMonthLabel">-</span></h4>
-    <div class="booked-list" id="bookedListContainer">
-      <div style="color:#64748b;text-align:center;padding:1rem;">No days booked yet.</div>
-    </div>
+    <div class="booked-list" id="bookedListContainer"></div>
 
-    <div class="action-row">
+    <div class="action-row" id="doctorActions">
       <div class="day-picker" id="dayPickerContainer"></div>
       <button class="btn" id="addDayBtn"><i class="fas fa-plus-circle"></i> Book</button>
       <span class="message" id="bookingMessage"></span>
+    </div>
+
+    <div id="adminActions" style="display:none; gap:1rem; flex-wrap:wrap;">
+      <button class="btn btn-outline" id="exportBtn"><i class="fas fa-file-excel"></i> Export Excel</button>
     </div>
   </div>
 </div>
 
 <script>
-(function() {
-  // رابط Google Apps Script الخاص بك
+(function(){
+  // ⚠️ استبدل هذا الرابط برابط النشر الخاص بك
   const API_URL = 'https://script.google.com/macros/s/AKfycbxWJ-otHIsiy-kXwDQua2AGB9V7Kiw8qnibcvhAG0X09RfHJ7yNesh8LMklzqAjaK5Z/exec';
-  
-  const MAX_DAYS = 4;
-  let doctor = { id: '', name: '' };
+
+  let session = null; // { role, staffNo, name, institution }
   let viewDate = new Date();
   let selectedDay = null;
-  let cache = {}; // { "6/2026": [ {day, doctorId, doctorName}, ... ] }
+  let dashboardData = { bookings: [], myBookings: [], minDays: 2, maxDays: 3, doctors: [] };
 
-  // تهيئة تاريخ العرض للشهر القادم
-  viewDate = (()=>{
-    const n=new Date();
-    let y=n.getFullYear(), m=n.getMonth()+2;
-    if(m>12){m=1;y++;}
-    return new Date(y,m-1,1);
-  })();
-  
-  function getMY(d) { return `${d.getMonth()+1}/${d.getFullYear()}`; }
+  function getYM(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+  function nextMonth(){
+    const n=new Date(); let y=n.getFullYear(), m=n.getMonth()+2;
+    if(m>12){m-=12;y++;} return new Date(y,m-1,1);
+  }
+  const MAX_MONTH = nextMonth();
 
-  // ==================== API ====================
-  function updateStatus(s) {
+  /* ---------- API ---------- */
+  function setStatus(s){
     const dot=document.getElementById('statusDot'), txt=document.getElementById('statusText');
-    dot.className='status-dot';
-    if(s==='syncing'){dot.classList.add('syncing');txt.textContent='Syncing...';}
-    else if(s==='online'){txt.textContent='Connected to Google Sheets';}
-    else{txt.textContent='Ready';}
+    dot.className='status-dot '+(s==='syncing'?'syncing':s==='offline'?'offline':'');
+    txt.textContent = s==='syncing'?'Syncing...':s==='offline'?'Offline':'Connected';
   }
-  
-  async function fetchBookings() {
-    updateStatus('syncing');
-    try {
-      const res = await fetch(`${API_URL}?action=getAllBookings`);
-      const d = await res.json();
-      console.log('Fetched data:', d); // للتصحيح
-      if(d.success) {
-        // نتأكد من تحويل البيانات إلى التنسيق الصحيح
-        if (d.data && typeof d.data === 'object' && !Array.isArray(d.data)) {
-          // البيانات بالتنسيق المطلوب { "6/2026": [...] }
-          cache = d.data;
-        } else if (Array.isArray(d.data)) {
-          // إذا كانت مصفوفة، نحولها
-          cache = {};
-          d.data.forEach(b => {
-            const key = b.monthYear;
-            if (!cache[key]) cache[key] = [];
-            cache[key].push({ day: b.day, doctorId: b.doctorId, doctorName: b.doctorName });
-          });
-        }
-        updateStatus('online');
-        console.log('Cache updated:', cache); // للتصحيح
-      } else {
-        throw new Error(d.message || 'Unknown error');
-      }
-    } catch(e) {
-      console.error('Fetch error:', e);
-      // fallback إلى localStorage
-      const b=localStorage.getItem('ml_backup');
-      if(b) cache=JSON.parse(b);
-    }
-  }
-  
-  async function saveBooking(day, monthYear) {
-    updateStatus('syncing');
+
+  async function api(action, payload){
+    setStatus('syncing');
     try {
       const res = await fetch(API_URL, {
         method:'POST',
-        headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        body:`action=addBooking&doctorId=${encodeURIComponent(doctor.id)}&doctorName=${encodeURIComponent(doctor.name)}&day=${day}&monthYear=${encodeURIComponent(monthYear)}`
+        // text/plain يتجنب CORS preflight
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({ action, ...payload })
       });
-      const d = await res.json();
-      if(d.success) {
-        await fetchBookings(); // إعادة تحميل البيانات بعد الحفظ
-        return true;
-      }
-      showMsg(d.message||'Error', 'error');
-      return false;
-    } catch(e) {
-      showMsg('Connection error', 'error');
-      return false;
+      const data = await res.json();
+      setStatus('online');
+      return data;
+    } catch(e){
+      console.error(e);
+      setStatus('offline');
+      return { ok:false, error:'Connection error' };
     }
   }
-  
-  async function deleteBooking(day, monthYear) {
-    updateStatus('syncing');
-    try {
-      const res = await fetch(API_URL, {
-        method:'POST',
-        headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        body:`action=deleteBooking&doctorId=${encodeURIComponent(doctor.id)}&day=${day}&monthYear=${encodeURIComponent(monthYear)}`
-      });
-      await fetchBookings(); // إعادة تحميل البيانات بعد الحذف
-      return true;
-    } catch(e) { return false; }
+
+  /* ---------- Login ---------- */
+  document.getElementById('loginBtn').onclick = async () => {
+    const staffNo = document.getElementById('staffInput').value.trim();
+    const password = document.getElementById('passInput').value;
+    if(!staffNo) return showMsg('Enter Employee ID','error');
+
+    const r = await api('login', { staffNo, password });
+    if(!r.ok) return showMsg(r.error||'Login failed','error');
+
+    session = r;
+    document.getElementById('loginPanel').style.display='none';
+    document.getElementById('userDisplay').style.display='flex';
+    document.getElementById('displayName').textContent = r.name;
+    document.getElementById('avatarLetter').textContent = (r.name||'?').charAt(0).toUpperCase();
+    document.getElementById('adminActions').style.display = r.role==='admin' ? 'flex' : 'none';
+    document.getElementById('doctorActions').style.display = r.role==='doctor' ? 'flex' : 'none';
+
+    // إشعارات
+    if(r.notifications && r.notifications.length){
+      renderNotifications(r.notifications);
+    } else {
+      document.getElementById('notifArea').innerHTML='';
+    }
+
+    // عرض الشهر القادم افتراضياً
+    viewDate = new Date(MAX_MONTH);
+    await loadDashboard();
+  };
+
+  document.getElementById('logoutBtn').onclick = () => {
+    session=null;
+    document.getElementById('loginPanel').style.display='flex';
+    document.getElementById('userDisplay').style.display='none';
+    document.getElementById('dashboardContent').style.display='none';
+    document.getElementById('notifArea').innerHTML='';
+  };
+
+  /* ---------- Notifications ---------- */
+  function renderNotifications(list){
+    const area = document.getElementById('notifArea');
+    area.innerHTML = `<div class="notif-banner">
+      <strong><i class="fas fa-bell"></i> You have ${list.length} new notification(s):</strong>
+      <button id="markReadBtn">Mark as read</button>
+      <ul style="margin-top:.5rem;padding-left:1.2rem;">
+        ${list.map(n=>`<li>${esc(n.message)}</li>`).join('')}
+      </ul>
+    </div>`;
+    document.getElementById('markReadBtn').onclick = async ()=>{
+      await api('markNotificationsRead', { staffNo: session.staffNo });
+      area.innerHTML='';
+    };
   }
-  
-  // ==================== UI ====================
-  function render() {
-    if(!doctor.id) { document.getElementById('dashboardContent').style.display='none'; return; }
-    document.getElementById('dashboardContent').style.display='block';
-    
-    const my = getMY(viewDate);
-    console.log('Rendering month:', my, 'Cache:', cache); // للتصحيح
-    
-    // مهم: التأكد من وجود البيانات للمفتاح الصحيح
-    const all = cache[my] || [];
-    const mine = all.filter(b => b.doctorId === doctor.id);
+
+  /* ---------- Dashboard ---------- */
+  async function loadDashboard(){
+    if(!session) return;
+    const ym = getYM(viewDate);
+    const r = await api('getDashboard', {
+      staffNo: session.staffNo, yearMonth: ym, role: session.role
+    });
+    if(!r.ok) return showMsg(r.error,'error');
+    dashboardData = r;
+    render();
+  }
+
+  function render(){
+    const ym = getYM(viewDate);
+    const all = dashboardData.bookings || [];
+    const mine = session.role==='doctor'
+      ? all.filter(b=>b.staffNo===session.staffNo)
+      : [];
     const cnt = mine.length;
-    
+    const maxD = dashboardData.maxDays ?? 3;
+
     document.getElementById('bookedCount').textContent = cnt;
-    document.getElementById('remainingCount').textContent = Math.max(0, MAX_DAYS - cnt);
-    const mStr = viewDate.toLocaleString('en-US',{month:'long',year:'numeric'});
-    document.getElementById('currentMonthLabel').textContent = mStr;
-    document.getElementById('monthTitle').textContent = mStr;
+    document.getElementById('remainingCount').textContent = Math.max(0, maxD - cnt);
+    const label = viewDate.toLocaleString('en-US',{month:'long',year:'numeric'});
+    document.getElementById('currentMonthLabel').textContent = label;
+    document.getElementById('monthTitle').textContent = label;
     document.getElementById('listMonthLabel').textContent = viewDate.toLocaleString('en-US',{month:'long'});
-    
-    // عرض قائمة الحجوزات
+
+    // قائمة الحجوزات
     const list = document.getElementById('bookedListContainer');
-    if(all.length === 0) {
+    if(!all.length){
       list.innerHTML = '<div style="color:#64748b;text-align:center;padding:1rem;">No days booked this month.</div>';
     } else {
-      list.innerHTML = [...all].sort((a,b) => a.day - b.day).map(b => `
+      list.innerHTML = [...all].sort((a,b)=>a.day-b.day).map(b=>`
         <div class="booked-item">
           <span>
             <span class="day-badge">Day ${b.day}</span>
-            <span style="color:#334155; margin-left:0.5rem;">${esc(b.doctorName)}</span>
+            <span style="color:#334155;margin-left:.5rem;">${esc(b.doctorName)}</span>
+            <span style="color:#94a3b8;font-size:.7rem;margin-left:.4rem;">#${esc(b.staffNo)}</span>
           </span>
-          ${b.doctorId === doctor.id ? `<button class="delete-btn" data-day="${b.day}"><i class="fas fa-trash-can"></i></button>` : ''}
-        </div>
-      `).join('');
-      
-      // إضافة أحداث الحذف
-      list.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          await deleteBooking(+btn.dataset.day, my);
-          render();
-          showMsg('Booking cancelled!', 'success');
-        });
+          ${session.role==='doctor' && b.staffNo===session.staffNo
+            ? `<button class="delete-btn" data-id="${b.id}"><i class="fas fa-trash-can"></i></button>`
+            : session.role==='admin'
+              ? `<button class="delete-btn" data-id="${b.id}"><i class="fas fa-trash-can"></i></button>`
+              : ''}
+        </div>`).join('');
+
+      list.querySelectorAll('.delete-btn').forEach(btn=>{
+        btn.onclick = async ()=>{
+          const id = btn.dataset.id;
+          const r = session.role==='admin'
+            ? await api('adminUpdateBooking', { bookingId:id, subAction:'delete' })
+            : await api('cancelBooking', { id, staffNo: session.staffNo });
+          if(r.ok){ showMsg('Deleted','success'); await loadDashboard(); }
+          else showMsg(r.error,'error');
+        };
       });
     }
-    
-    // عرض منتقي الأيام
-    const year = viewDate.getFullYear();
-    const month = viewDate.getMonth() + 1;
-    const dim = new Date(year, month, 0).getDate();
-    const myDays = mine.map(b => b.day);
-    let html = '';
-    for(let d = 1; d <= dim; d++) {
-      let cls = 'day-cell';
-      if(myDays.includes(d)) cls += ' booked';
-      else if(all.some(b => b.day === d)) cls += ' disabled';
-      html += `<div class="${cls}" data-day="${d}">${d}</div>`;
-    }
+
+    // منتقي الأيام (للأطباء فقط)
     const picker = document.getElementById('dayPickerContainer');
-    picker.innerHTML = html;
-    picker.querySelectorAll('.day-cell:not(.booked):not(.disabled)').forEach(cell => {
-      cell.addEventListener('click', function() {
-        picker.querySelectorAll('.selected').forEach(e => e.classList.remove('selected'));
-        this.classList.add('selected');
-        selectedDay = +this.dataset.day;
-        document.getElementById('bookingMessage').textContent = '';
+    if(session.role==='doctor'){
+      const year = viewDate.getFullYear();
+      const month = viewDate.getMonth()+1;
+      const dim = new Date(year, month, 0).getDate();
+      const myDays = mine.map(b=>b.day);
+      let html='';
+      for(let d=1; d<=dim; d++){
+        let cls='day-cell';
+        if(myDays.includes(d)) cls+=' booked';
+        else if(all.some(b=>b.day===d)) cls+=' disabled';
+        html += `<div class="${cls}" data-day="${d}">${d}</div>`;
+      }
+      picker.innerHTML = html;
+      picker.querySelectorAll('.day-cell:not(.booked):not(.disabled)').forEach(cell=>{
+        cell.onclick = function(){
+          picker.querySelectorAll('.selected').forEach(e=>e.classList.remove('selected'));
+          this.classList.add('selected');
+          selectedDay = +this.dataset.day;
+          document.getElementById('bookingMessage').classList.remove('show');
+        };
       });
-    });
-    
-    // أزرار التنقل بين الشهور
-    const nm = (()=>{
-      const n=new Date(); let y=n.getFullYear(), m=n.getMonth()+2;
-      if(m>12){m=1;y++;} return new Date(y,m-1,1);
-    })();
-    document.getElementById('prevMonthBtn').disabled = viewDate <= nm;
-    document.getElementById('nextMonthBtn').disabled = viewDate >= nm;
+    } else {
+      picker.innerHTML = '';
+    }
+
     selectedDay = null;
+
+    // حدود التنقل بين الشهور
+    document.getElementById('prevMonthBtn').disabled = viewDate <= MAX_MONTH;
+    document.getElementById('nextMonthBtn').disabled = viewDate >= MAX_MONTH;
   }
-  
-  function showMsg(t, c) {
+
+  document.getElementById('addDayBtn').onclick = async ()=>{
+    if(!selectedDay) return showMsg('Select a day first','error');
+    const ym = getYM(viewDate);
+    const r = await api('bookDay', {
+      staffNo: session.staffNo, doctorName: session.name, yearMonth: ym, day: selectedDay
+    });
+    if(r.ok){ showMsg(`Day ${selectedDay} booked!`,'success'); await loadDashboard(); }
+    else showMsg(r.error,'error');
+  };
+
+  document.getElementById('prevMonthBtn').onclick = ()=>{
+    const d = new Date(viewDate); d.setMonth(d.getMonth()-1);
+    if(d < MAX_MONTH) return;
+    viewDate = d; loadDashboard();
+  };
+  document.getElementById('nextMonthBtn').onclick = ()=>{
+    const d = new Date(viewDate); d.setMonth(d.getMonth()+1);
+    if(d > MAX_MONTH) return;
+    viewDate = d; loadDashboard();
+  };
+
+  document.getElementById('exportBtn').onclick = async ()=>{
+    const r = await api('exportExcel', { yearMonth: getYM(viewDate) });
+    if(r.ok) window.open(r.downloadUrl, '_blank');
+    else showMsg(r.error||'Export failed','error');
+  };
+
+  /* ---------- Utils ---------- */
+  function showMsg(t, c){
     const m = document.getElementById('bookingMessage');
-    m.textContent = t; m.className = 'message ' + c;
-    setTimeout(() => { m.textContent = ''; m.className = 'message'; }, 3000);
+    m.textContent = t;
+    m.className = 'message show ' + c;
+    setTimeout(()=>{ m.classList.remove('show'); }, 3000);
   }
-  
-  function esc(t) { return String(t).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
-  
-  // ==================== الأحداث ====================
-  document.getElementById('loginBtn').addEventListener('click', async () => {
-    const id = document.getElementById('doctorIdInput').value.trim();
-    const name = document.getElementById('doctorNameInput').value.trim();
-    if(!id || !name) return alert('Enter Employee ID and Name');
-    doctor = { id, name };
-    document.getElementById('loginPanel').style.display = 'none';
-    document.getElementById('userDisplay').style.display = 'flex';
-    document.getElementById('displayName').textContent = name;
-    document.getElementById('avatarLetter').textContent = name.charAt(0).toUpperCase();
-    await fetchBookings();
-    render();
-  });
-  
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    doctor = { id: '', name: '' };
-    document.getElementById('loginPanel').style.display = 'flex';
-    document.getElementById('userDisplay').style.display = 'none';
-    document.getElementById('dashboardContent').style.display = 'none';
-  });
-  
-  document.getElementById('addDayBtn').addEventListener('click', async () => {
-    if(!selectedDay) return showMsg('Select a day first', 'error');
-    const ok = await saveBooking(selectedDay, getMY(viewDate));
-    if(ok) { render(); showMsg(`Day ${selectedDay} booked!`, 'success'); }
-  });
-  
-  document.getElementById('prevMonthBtn').addEventListener('click', () => {
-    const d = new Date(viewDate); d.setMonth(d.getMonth() - 1);
-    const nm = (()=>{ const n=new Date(); let y=n.getFullYear(), m=n.getMonth()+2; if(m>12){m=1;y++;} return new Date(y,m-1,1); })();
-    if(d < nm) return;
-    viewDate = d; render();
-  });
-  
-  document.getElementById('nextMonthBtn').addEventListener('click', () => {
-    const d = new Date(viewDate); d.setMonth(d.getMonth() + 1);
-    const nm = (()=>{ const n=new Date(); let y=n.getFullYear(), m=n.getMonth()+2; if(m>12){m=1;y++;} return new Date(y,m-1,1); })();
-    if(d > nm) return;
-    viewDate = d; render();
-  });
-  
-  // التهيئة المبدئية
-  document.getElementById('dashboardContent').style.display = 'none';
-  document.getElementById('userDisplay').style.display = 'none';
-  updateStatus('online');
+  function esc(t){ return String(t).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+  setStatus('online');
 })();
 </script>
 </body>
