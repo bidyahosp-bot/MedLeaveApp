@@ -202,9 +202,7 @@
 
 <script>
 (function(){
-  /* ==========================================================
-     ⚠️ ضع هنا رابط النشر /exec من Apps Script
-     ========================================================== */
+  /* ⚠️ تأكد أن هذا الرابط هو رابط النشر الحالي (ينتهي بـ /exec) */
   const API_URL = 'https://script.google.com/macros/s/AKfycbz1m8Pk8t_wopbtFhV06UL9iq4oqXE4h7Q3COkrgTlcUTCLzIAqHozp_qJ5YrFq4lub/exec';
 
   let session = null;
@@ -225,40 +223,47 @@
     txt.textContent = s==='syncing'?'Syncing...':s==='offline'?'Offline':'Connected';
   }
 
-  /* ==========================================================
-     ⚠️ مهم: Content-Type يجب أن يكون text/plain
-     لتجنب CORS preflight (OPTIONS) الذي لا يدعمه Apps Script
-     ========================================================== */
- async function api(action, payload){
+  async function api(action, payload){
     setStatus('syncing');
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
-        // ⚠️ يجب أن يكون text/plain لتجنب CORS preflight
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action, ...payload }),
         redirect: 'follow'
       });
-      if(!res.ok) throw new Error('HTTP '+res.status);
-      const data = await res.json();
-      setStatus('online');
-      return data;
+      if(!res.ok) throw new Error('HTTP status: ' + res.status);
+      
+      const text = await res.text(); // نقرأ النص أولاً للتشخيص
+      try {
+        const data = JSON.parse(text);
+        setStatus('online');
+        return data;
+      } catch(jsonErr) {
+        console.error('الرد ليس JSON. الرد الفعلي كان:', text);
+        throw new Error('Invalid JSON response from server. Check console.');
+      }
     } catch(e){
       console.error('[API error]', e);
       setStatus('offline');
-      return { ok:false, error: 'Connection error — check your internet / Apps Script deployment.' };
+      // إظهار الخطأ في الشاشة
+      alert('خطأ في الاتصال:\n' + e.message);
+      return { ok:false, error: e.message };
     }
-}
+  }
 
-
-  /* ---------- Login ---------- */
   document.getElementById('loginBtn').onclick = async () => {
     const staffNo = document.getElementById('staffInput').value.trim();
     const password = document.getElementById('passInput').value;
     if(!staffNo) return showMsg('Enter Employee ID','error');
 
     const r = await api('login', { staffNo, password });
-    if(!r.ok) return showMsg(r.error||'Login failed','error');
+    
+    // التشخيص: إذا لم يعمل، نطبع ما وصلنا
+    if(!r || !r.ok) {
+       console.warn('Login failed:', r);
+       return showMsg(r?.error || 'Login failed (see console)', 'error');
+    }
 
     session = r;
     document.getElementById('loginPanel').style.display='none';
@@ -286,7 +291,6 @@
     document.getElementById('notifArea').innerHTML='';
   };
 
-  /* ---------- Notifications ---------- */
   function renderNotifications(list){
     const area = document.getElementById('notifArea');
     area.innerHTML = `<div class="notif-banner">
@@ -302,14 +306,16 @@
     };
   }
 
-  /* ---------- Dashboard ---------- */
   async function loadDashboard(){
     if(!session) return;
     const ym = getYM(viewDate);
     const r = await api('getDashboard', {
       staffNo: session.staffNo, yearMonth: ym, role: session.role
     });
-    if(!r.ok) return showMsg(r.error,'error');
+    if(!r.ok) {
+        console.warn('Dashboard load failed:', r);
+        return showMsg(r.error,'error');
+    }
     dashboardData = r;
     render();
   }
@@ -417,6 +423,7 @@
 
   function showMsg(t, c){
     const m = document.getElementById('bookingMessage');
+    if(!m) return; // في حال عدم وجود العنصر
     m.textContent = t;
     m.className = 'message show ' + c;
     setTimeout(()=>{ m.classList.remove('show'); }, 3000);
