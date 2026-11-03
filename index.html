@@ -229,11 +229,12 @@
      ⚠️ مهم: Content-Type يجب أن يكون text/plain
      لتجنب CORS preflight (OPTIONS) الذي لا يدعمه Apps Script
      ========================================================== */
-  async function api(action, payload){
+ async function api(action, payload){
     setStatus('syncing');
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
+        // ⚠️ يجب أن يكون text/plain لتجنب CORS preflight
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action, ...payload }),
         redirect: 'follow'
@@ -247,7 +248,8 @@
       setStatus('offline');
       return { ok:false, error: 'Connection error — check your internet / Apps Script deployment.' };
     }
-  }
+}
+
 
   /* ---------- Login ---------- */
   document.getElementById('loginBtn').onclick = async () => {
