@@ -190,7 +190,7 @@
         <button class="type-radio" data-type="ML">إجازة وضع (ML)</button>
       </div>
 
-      <!-- واجهة اختيار الأيام الشهرية (لـ O و Call) -->
+      <!-- واجهة اختيار الأيام الشهرية (لـ O و Call فقط) -->
       <div id="calendarPickerSection">
         <div class="month-selector">
           <button class="nav-arrow" id="prevMonthBtn"><i class="fas fa-chevron-right"></i></button>
@@ -205,10 +205,10 @@
         </div>
       </div>
 
-      <!-- واجهة تقويم السنة القادمة وفترات الإجازة السنوية/الوضع (AL & ML) -->
-      <div id="multiPeriodSection" style="display:none; background:#fff; padding:1.2rem; border-radius:1rem; border:1px solid #dce5ef; gap:1.2rem; display:flex; flex-direction:column;">
+      <!-- واجهة تقويم وفترات الإجازة السنوية أو الوضع (AL & ML منفصلة تماماً) -->
+      <div id="multiPeriodSection" style="display:none; background:#fff; padding:1.2rem; border-radius:1rem; border:1px solid #dce5ef; gap:1.2rem; flex-direction:column;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-          <h4 style="font-size:.95rem; color:#0c4a6e;"><i class="fas fa-calendar-alt"></i> جدول تقويم السنة القادمة (اختر فترات الإجازة بدقة من وإلى لكل شهر):</h4>
+          <h4 style="font-size:.95rem; color:#0c4a6e;"><i class="fas fa-calendar-alt"></i> جدول تحديد الفترات للإجازة السنوية / الوضع (من شهر/يوم إلى شهر/يوم):</h4>
           <button class="btn btn-sm" id="addPeriodBtn" type="button"><i class="fas fa-plus"></i> إضافة فترة أخرى</button>
         </div>
 
@@ -368,6 +368,7 @@
     };
   }
 
+  // التبديل بين أنواع الإجازات وفصل الواجهات تماماً
   document.querySelectorAll('.leave-type-selector button').forEach(btn => {
     btn.onclick = function() {
       document.querySelectorAll('.leave-type-selector button').forEach(b => b.classList.remove('active'));
@@ -530,7 +531,7 @@
 
     const r = await api('bookDays', payload);
     if(r.ok) {
-      alert('تم حجز الأيام وإرسال الطلب بنجاح!');
+      alert('تم حجز الفترات وإرسال الطلب بنجاح!');
       selectedDays = [];
       document.getElementById('selectedDaysPreview').textContent = 'لا توجد أيام مختارة';
       await loadDashboard();
