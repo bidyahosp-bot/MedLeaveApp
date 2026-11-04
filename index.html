@@ -190,15 +190,14 @@
         <button class="type-radio" data-type="ML">إجازة وضع (ML)</button>
       </div>
 
-      <div class="month-selector">
-        <button class="nav-arrow" id="prevMonthBtn"><i class="fas fa-chevron-right"></i></button>
-        <div class="month-title" id="monthTitle">-</div>
-        <button class="nav-arrow" id="nextMonthBtn"><i class="fas fa-chevron-left"></i></button>
-      </div>
-
-      <!-- واجهة اختيار الأيام (لـ O و Call) -->
+      <!-- واجهة اختيار الأيام الشهرية (لـ O و Call) -->
       <div id="calendarPickerSection">
-        <p style="font-size:.85rem; color:#64748b;">اختر الأيام من التقويم المصغر أدناه (يمكنك اختيار أكثر من يوم):</p>
+        <div class="month-selector">
+          <button class="nav-arrow" id="prevMonthBtn"><i class="fas fa-chevron-right"></i></button>
+          <div class="month-title" id="monthTitle">-</div>
+          <button class="nav-arrow" id="nextMonthBtn"><i class="fas fa-chevron-left"></i></button>
+        </div>
+        <p style="font-size:.85rem; color:#64748b; margin-top:.5rem;">اختر الأيام من التقويم أدناه:</p>
         <div class="day-picker" id="dayPickerContainer"></div>
         <div style="margin-top:.5rem;">
           <strong>الأيام المحددة للحجز:</strong>
@@ -206,22 +205,30 @@
         </div>
       </div>
 
-      <!-- واجهة إدخال الفترات المتعددة (للإجازة السنوية AL وإجازة الوضع ML) -->
-      <div id="multiPeriodSection" style="display:none; background:#fff; padding:1.2rem; border-radius:1rem; border:1px solid #dce5ef; gap:1rem; display:flex; flex-direction:column;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <p style="font-size:.85rem; color:#64748b; font-weight:600;"><i class="fas fa-calendar-alt"></i> تحديد الفترات لشهر <span id="annualMonthLabel">-</span>:</p>
+      <!-- واجهة تقويم السنة القادمة وفترات الإجازة السنوية/الوضع (AL & ML) -->
+      <div id="multiPeriodSection" style="display:none; background:#fff; padding:1.2rem; border-radius:1rem; border:1px solid #dce5ef; gap:1.2rem; display:flex; flex-direction:column;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <h4 style="font-size:.95rem; color:#0c4a6e;"><i class="fas fa-calendar-alt"></i> جدول تقويم السنة القادمة (اختر فترات الإجازة بدقة من وإلى لكل شهر):</h4>
           <button class="btn btn-sm" id="addPeriodBtn" type="button"><i class="fas fa-plus"></i> إضافة فترة أخرى</button>
         </div>
+
         <div id="periodsContainer" style="display:flex; flex-direction:column; gap:.8rem;">
-          <!-- سيتم إضافة حقول الفترات هنا ديناميكياً -->
-          <div class="period-row" style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+          <div class="period-row" style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap; background:#f8fafc; padding:.8rem; border-radius:.8rem; border:1px solid #e2e8f0;">
+            <div>
+              <label style="font-size:.8rem; font-weight:600; display:block;">من شهر:</label>
+              <input type="month" class="start-ym" value="2027-01" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; outline:none;">
+            </div>
             <div>
               <label style="font-size:.8rem; font-weight:600; display:block;">من يوم:</label>
-              <input type="number" class="start-day" min="1" max="31" placeholder="مثال: 1" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:90px; outline:none;">
+              <input type="number" class="start-day" min="1" max="31" placeholder="1" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:70px; outline:none;">
+            </div>
+            <div>
+              <label style="font-size:.8rem; font-weight:600; display:block;">إلى شهر:</label>
+              <input type="month" class="end-ym" value="2027-01" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; outline:none;">
             </div>
             <div>
               <label style="font-size:.8rem; font-weight:600; display:block;">إلى يوم:</label>
-              <input type="number" class="end-day" min="1" max="31" placeholder="مثال: 5" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:90px; outline:none;">
+              <input type="number" class="end-day" min="1" max="31" placeholder="10" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:70px; outline:none;">
             </div>
           </div>
         </div>
@@ -251,7 +258,7 @@
       <h4 style="color:#0369a1; font-size:1rem; margin-top:.5rem;"><i class="fas fa-calendar"></i> 1. تقويم الطلبات (الشهر المختار: O, Call, AL, ML)</h4>
       <div style="overflow-x:auto;" id="requestsCalendarContainer"></div>
 
-      <h4 style="color:#0369a1; font-size:1rem; margin-top:1.5rem;"><i class="fas fa-calendar-alt"></i> 2. تقويم الإجازات السنوية والوضع (خطة السنة كاملة: AL & ML)</h4>
+      <h4 style="color:#0369a1; font-size:1rem; margin-top:1.5rem;"><i class="fas fa-calendar-alt"></i> 2. تقويم الإجازات السنوية ووضع (خطة السنة كاملة: AL & ML)</h4>
       <div style="overflow-x:auto;" id="annualLeaveCalendarContainer"></div>
     </div>
 
@@ -361,7 +368,6 @@
     };
   }
 
-  // التبديل بين أنواع الإجازات
   document.querySelectorAll('.leave-type-selector button').forEach(btn => {
     btn.onclick = function() {
       document.querySelectorAll('.leave-type-selector button').forEach(b => b.classList.remove('active'));
@@ -374,7 +380,6 @@
       if(selectedLeaveType === 'AL' || selectedLeaveType === 'ML') {
         calSec.style.display = 'none';
         multiSec.style.display = 'flex';
-        document.getElementById('annualMonthLabel').textContent = viewDate.toLocaleString('en-US',{month:'long',year:'numeric'});
       } else {
         calSec.style.display = 'block';
         multiSec.style.display = 'none';
@@ -384,20 +389,27 @@
     };
   });
 
-  // إضافة فترة أخرى لإجازة AL أو ML
   document.getElementById('addPeriodBtn').onclick = () => {
     const container = document.getElementById('periodsContainer');
     const div = document.createElement('div');
     div.className = 'period-row';
-    div.style.cssText = 'display:flex; gap:1rem; align-items:center; flex-wrap:wrap; margin-top:.4rem;';
+    div.style.cssText = 'display:flex; gap:1rem; align-items:center; flex-wrap:wrap; background:#f8fafc; padding:.8rem; border-radius:.8rem; border:1px solid #e2e8f0; margin-top:.4rem;';
     div.innerHTML = `
       <div>
+        <label style="font-size:.8rem; font-weight:600; display:block;">من شهر:</label>
+        <input type="month" class="start-ym" value="2027-01" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; outline:none;">
+      </div>
+      <div>
         <label style="font-size:.8rem; font-weight:600; display:block;">من يوم:</label>
-        <input type="number" class="start-day" min="1" max="31" placeholder="مثال: 1" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:90px; outline:none;">
+        <input type="number" class="start-day" min="1" max="31" placeholder="1" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:70px; outline:none;">
+      </div>
+      <div>
+        <label style="font-size:.8rem; font-weight:600; display:block;">إلى شهر:</label>
+        <input type="month" class="end-ym" value="2027-01" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; outline:none;">
       </div>
       <div>
         <label style="font-size:.8rem; font-weight:600; display:block;">إلى يوم:</label>
-        <input type="number" class="end-day" min="1" max="31" placeholder="مثال: 5" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:90px; outline:none;">
+        <input type="number" class="end-day" min="1" max="31" placeholder="10" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:70px; outline:none;">
       </div>
       <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>
     `;
@@ -443,7 +455,7 @@
         <div class="booked-item">
           <span>
             <strong style="background:#e0f2fe;padding:.2rem .6rem;border-radius:1rem;">${b.yearMonth} - يوم ${b.day}</strong>
-            <span style="margin-right:.5rem;color:#0369a1;font-weight:600;">[${b.leaveType}]</span>
+            <span style="margin-right:.5rem;color:${b.leaveType==='ML'?'#db2777':'#0369a1'};font-weight:600;">[${b.leaveType}]</span>
             <span style="margin-right:.5rem;color:${b.status==='Approved'?'#22c55e':b.status==='Rejected'?'#ef4444':'#f59e0b'};">(${b.status})</span>
           </span>
           ${b.status !== 'Approved' ? `<button class="btn btn-danger btn-sm" onclick="cancelBooking('${b.id}')"><i class="fas fa-trash"></i> إلغاء</button>` : '<span style="font-size:.75rem;color:#22c55e;font-weight:600;"><i class="fas fa-check"></i> معتمد</span>'}
@@ -501,13 +513,15 @@
       const rows = document.querySelectorAll('.period-row');
       let periods = [];
       for(let row of rows) {
+        const startYM = row.querySelector('.start-ym').value;
         const startDay = row.querySelector('.start-day').value;
+        const endYM = row.querySelector('.end-ym').value;
         const endDay = row.querySelector('.end-day').value;
-        if(startDay && endDay) {
-          periods.push({ startDay, endDay });
+        if(startYM && startDay && endYM && endDay) {
+          periods.push({ startYM, startDay, endYM, endDay });
         }
       }
-      if(periods.length === 0) return alert('الرجاء إدخال فترة صحيحة واحدة على الأقل');
+      if(periods.length === 0) return alert('الرجاء إدخال فترات صحيحة (من شهر/يوم إلى شهر/يوم)');
       payload.periods = periods;
     } else {
       if(!selectedDays.length) return alert('الرجاء اختيار أيام أولاً من التقويم');
@@ -529,7 +543,7 @@
     const all = dashboardData.bookings || [];
     const doctors = dashboardData.doctors || [];
 
-    // 1. تقويم الطلبات (الشهر المختار: O, Call, AL, ML)
+    // 1. تقويم الطلبات
     let reqHtml = `<table class="admin-calendar-table"><tr><th>الطبيب</th><th>الرقم</th>`;
     for(let d=1; d<=31; d++) reqHtml += `<th>${d}</th>`;
     reqHtml += `<th>إجراءات</th></tr>`;
@@ -542,10 +556,9 @@
         let bg = '';
         if(b) {
           cellText = b.leaveType;
-          // تمييز الألوان حسب نوع الإجازة
-          if(b.leaveType === 'AL') bg = '#d1fae5'; // أخضر
-          else if(b.leaveType === 'ML') bg = '#fce7f3'; // وردي لإجازة الوضع
-          else bg = b.status === 'Approved' ? '#d1fae5' : '#fef3c7'; // O و Call
+          if(b.leaveType === 'AL') bg = '#d1fae5'; // أخضر سنوية
+          else if(b.leaveType === 'ML') bg = '#fce7f3'; // وردي إجازة وضع
+          else bg = b.status === 'Approved' ? '#d1fae5' : '#fef3c7';
         }
         reqHtml += `<td style="background:${bg};font-weight:bold;font-size:.75rem;" title="${b ? 'النوع: '+b.leaveType+' | الحالة: '+b.status : ''}">${cellText} ${b && b.status==='Pending'?'*':''}</td>`;
       }
@@ -554,9 +567,9 @@
     reqHtml += `</table>`;
     document.getElementById('requestsCalendarContainer').innerHTML = reqHtml;
 
-    // 2. تقويم الإجازات السنوية ووضع (صف واحد لكل طبيب مع أعمدة الأشهر الـ 12)
+    // 2. تقويم السنة الكاملة للإجازات السنوية وإجازة الوضع (AL & ML)
     let annHtml = `<table class="admin-calendar-table"><tr><th>الطبيب</th><th>الرقم</th>`;
-    const monthsCode = ['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10','2026-11','2026-12'];
+    const monthsCode = ['2027-01','2027-02','2027-03','2027-04','2027-05','2027-06','2027-07','2027-08','2027-09','2027-10','2027-11','2027-12'];
     const monthsName = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
     
     monthsName.forEach(m => { annHtml += `<th>${m}</th>`; });
