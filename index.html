@@ -205,7 +205,7 @@
         </div>
       </div>
 
-      <!-- واجهة تقويم وفترات الإجازة السنوية أو الوضع (AL & ML منفصلة تماماً) -->
+      <!-- واجهة تقويم وفترات الإجازة السنوية أو الوضع (AL & ML) -->
       <div id="multiPeriodSection" style="display:none; background:#fff; padding:1.2rem; border-radius:1rem; border:1px solid #dce5ef; gap:1.2rem; flex-direction:column;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
           <h4 style="font-size:.95rem; color:#0c4a6e;"><i class="fas fa-calendar-alt"></i> جدول تحديد الفترات للإجازة السنوية / الوضع (من شهر/يوم إلى شهر/يوم):</h4>
@@ -255,10 +255,10 @@
         <input type="month" id="adminMonthPicker" style="padding:.4rem 1rem; border-radius:1rem; border:1px solid #cbd5e1; outline:none;">
       </div>
 
-      <h4 style="color:#0369a1; font-size:1rem; margin-top:.5rem;"><i class="fas fa-calendar"></i> 1. تقويم الطلبات (الشهر المختار: O, Call, AL, ML)</h4>
+      <h4 style="color:#0369a1; font-size:1rem; margin-top:.5rem;"><i class="fas fa-calendar"></i> 1. تقويم الطلبات (للشهر المحدد: O & Call فقط)</h4>
       <div style="overflow-x:auto;" id="requestsCalendarContainer"></div>
 
-      <h4 style="color:#0369a1; font-size:1rem; margin-top:1.5rem;"><i class="fas fa-calendar-alt"></i> 2. تقويم الإجازات السنوية ووضع (خطة السنة كاملة: AL & ML)</h4>
+      <h4 style="color:#0369a1; font-size:1rem; margin-top:1.5rem;"><i class="fas fa-calendar-alt"></i> 2. تقويم الإجازات السنوية وإجازة الوضع (خطة السنة كاملة: AL & ML فقط)</h4>
       <div style="overflow-x:auto;" id="annualLeaveCalendarContainer"></div>
     </div>
 
@@ -368,7 +368,6 @@
     };
   }
 
-  // التبديل بين أنواع الإجازات وفصل الواجهات تماماً
   document.querySelectorAll('.leave-type-selector button').forEach(btn => {
     btn.onclick = function() {
       document.querySelectorAll('.leave-type-selector button').forEach(b => b.classList.remove('active'));
@@ -469,154 +468,4 @@
     let html='';
     for(let d=1; d<=dim; d++){
       let cls='day-cell';
-      const isBooked = all.some(b => b.day === d && b.staffNo === session.staffNo);
-      if(isBooked) cls+=' booked';
-      if(selectedDays.includes(d)) cls+=' selected';
-      html += `<div class="${cls}" data-day="${d}">${d}</div>`;
-    }
-    const picker = document.getElementById('dayPickerContainer');
-    picker.innerHTML = html;
-
-    picker.querySelectorAll('.day-cell:not(.booked)').forEach(cell=>{
-      cell.onclick = function(){
-        const d = +this.dataset.day;
-        if(selectedDays.includes(d)){
-          selectedDays = selectedDays.filter(x => x !== d);
-          this.classList.remove('selected');
-        } else {
-          selectedDays.push(d);
-          this.classList.add('selected');
-        }
-        document.getElementById('selectedDaysPreview').textContent = selectedDays.length ? selectedDays.sort((a,b)=>a-b).join(', ') : 'لا توجد أيام مختارة';
-      };
-    });
-
-    document.getElementById('prevMonthBtn').disabled = viewDate <= MIN_VIEW_DATE;
-  }
-
-  window.cancelBooking = async function(id){
-    if(!confirm('هل أنت متأكد من إلغاء هذا الطلب؟')) return;
-    const r = await api('cancelBooking', { id, staffNo: session.staffNo });
-    if(r.ok) { alert('تم الإلغاء بنجاح'); loadDashboard(); }
-    else alert(r.error);
-  };
-
-  document.getElementById('confirmBookingBtn').onclick = async () => {
-    const ym = getYM(viewDate);
-    let payload = {
-      staffNo: session.staffNo,
-      doctorName: session.name,
-      yearMonth: ym,
-      leaveType: selectedLeaveType
-    };
-
-    if (selectedLeaveType === 'AL' || selectedLeaveType === 'ML') {
-      const rows = document.querySelectorAll('.period-row');
-      let periods = [];
-      for(let row of rows) {
-        const startYM = row.querySelector('.start-ym').value;
-        const startDay = row.querySelector('.start-day').value;
-        const endYM = row.querySelector('.end-ym').value;
-        const endDay = row.querySelector('.end-day').value;
-        if(startYM && startDay && endYM && endDay) {
-          periods.push({ startYM, startDay, endYM, endDay });
-        }
-      }
-      if(periods.length === 0) return alert('الرجاء إدخال فترات صحيحة (من شهر/يوم إلى شهر/يوم)');
-      payload.periods = periods;
-    } else {
-      if(!selectedDays.length) return alert('الرجاء اختيار أيام أولاً من التقويم');
-      payload.days = selectedDays;
-    }
-
-    const r = await api('bookDays', payload);
-    if(r.ok) {
-      alert('تم حجز الفترات وإرسال الطلب بنجاح!');
-      selectedDays = [];
-      document.getElementById('selectedDaysPreview').textContent = 'لا توجد أيام مختارة';
-      await loadDashboard();
-    } else {
-      alert(r.error);
-    }
-  };
-
-  function renderAdminDashboard(){
-    const all = dashboardData.bookings || [];
-    const doctors = dashboardData.doctors || [];
-
-    // 1. تقويم الطلبات
-    let reqHtml = `<table class="admin-calendar-table"><tr><th>الطبيب</th><th>الرقم</th>`;
-    for(let d=1; d<=31; d++) reqHtml += `<th>${d}</th>`;
-    reqHtml += `<th>إجراءات</th></tr>`;
-
-    doctors.forEach(doc => {
-      reqHtml += `<tr><td style="font-weight:600;text-align:right;white-space:nowrap;">${doc.name}</td><td>${doc.staffNo}</td>`;
-      for(let d=1; d<=31; d++){
-        const b = all.find(x => x.staffNo === doc.staffNo && Number(x.day) === d);
-        let cellText = '';
-        let bg = '';
-        if(b) {
-          cellText = b.leaveType;
-          if(b.leaveType === 'AL') bg = '#d1fae5'; // أخضر سنوية
-          else if(b.leaveType === 'ML') bg = '#fce7f3'; // وردي إجازة وضع
-          else bg = b.status === 'Approved' ? '#d1fae5' : '#fef3c7';
-        }
-        reqHtml += `<td style="background:${bg};font-weight:bold;font-size:.75rem;" title="${b ? 'النوع: '+b.leaveType+' | الحالة: '+b.status : ''}">${cellText} ${b && b.status==='Pending'?'*':''}</td>`;
-      }
-      reqHtml += `<td><button class="btn btn-sm btn-success" onclick="promptAdminAction('${doc.staffNo}','${doc.name}')">إدارة</button></td></tr>`;
-    });
-    reqHtml += `</table>`;
-    document.getElementById('requestsCalendarContainer').innerHTML = reqHtml;
-
-    // 2. تقويم السنة الكاملة للإجازات السنوية وإجازة الوضع (AL & ML)
-    let annHtml = `<table class="admin-calendar-table"><tr><th>الطبيب</th><th>الرقم</th>`;
-    const monthsCode = ['2027-01','2027-02','2027-03','2027-04','2027-05','2027-06','2027-07','2027-08','2027-09','2027-10','2027-11','2027-12'];
-    const monthsName = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-    
-    monthsName.forEach(m => { annHtml += `<th>${m}</th>`; });
-    annHtml += `</tr>`;
-
-    doctors.forEach(doc => {
-      annHtml += `<tr><td style="font-weight:600;text-align:right;white-space:nowrap;">${doc.name}</td><td style="font-weight:600;">${doc.staffNo}</td>`;
-      monthsCode.forEach(ym => {
-        const mineLeaves = all.filter(x => x.staffNo === doc.staffNo && x.yearMonth === ym && (x.leaveType === 'AL' || x.leaveType === 'ML'));
-        mineLeaves.sort((a,b) => a.day - b.day);
-        const daysStr = mineLeaves.map(b => `${b.day}(${b.leaveType})`).join(', ');
-        const hasML = mineLeaves.some(b => b.leaveType === 'ML');
-        const bg = hasML ? '#fce7f3' : mineLeaves.length ? '#d1fae5' : '';
-        annHtml += `<td style="background:${bg};font-size:.75rem;text-align:center;">${daysStr || '-'}</td>`;
-      });
-      annHtml += `</tr>`;
-    });
-    annHtml += `</table>`;
-    document.getElementById('annualLeaveCalendarContainer').innerHTML = annHtml;
-  }
-
-  window.promptAdminAction = function(staffNo, doctorName){
-    const action = prompt('اختر الإجراء:\n1. إضافة يوم جديد (add)', 'add');
-    if(!action) return;
-    if(action === 'add'){
-      const day = prompt('أدخل رقم اليوم (1-31):');
-      if(!day) return;
-      const leaveType = prompt('نوع الإجازة (O, Call, AL, ML):', 'O');
-      const yearMonth = document.getElementById('adminMonthPicker').value || getYM(new Date());
-      api('adminUpdateBooking', { staffNo, doctorName, yearMonth, day, leaveType, subAction: 'add' }).then(r => {
-        if(r.ok) { alert('تمت الإضافة بنجاح'); loadDashboard(); } else alert(r.error);
-      });
-    }
-  };
-
-  document.getElementById('adminMonthPicker').onchange = () => loadDashboard();
-
-  document.getElementById('exportBtn').onclick = async ()=>{
-    const ym = document.getElementById('adminMonthPicker').value || getYM(new Date());
-    const r = await api('exportExcel', { yearMonth: ym });
-    if(r.ok) window.open(r.downloadUrl, '_blank');
-    else alert(r.error || 'فشل التصدير');
-  };
-
-  setStatus('online');
-})();
-</script>
-</body>
-</html>
+      const isBooked = all.some(b => b.day === d && b.
