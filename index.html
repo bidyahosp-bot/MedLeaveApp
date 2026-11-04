@@ -11,12 +11,12 @@
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; }
     body {
       background:linear-gradient(135deg,#f0f6fc,#e2ecf5);
-      min-height:100vh; padding:1.5rem; color:#1e293b;
+      min-height:100vh; padding:1rem; color:#1e293b;
       display:flex; justify-content:center; align-items:flex-start;
     }
     .app-container {
-      max-width:1200px; width:100%; background:rgba(255,255,255,.98);
-      backdrop-filter:blur(20px); border-radius:2rem; padding:2rem;
+      max-width:98%; width:100%; background:rgba(255,255,255,.98);
+      backdrop-filter:blur(20px); border-radius:1.5rem; padding:1.5rem;
       box-shadow:0 25px 50px -12px rgba(0,0,0,.15);
       display:flex; flex-direction:column; gap:1.5rem;
     }
@@ -83,7 +83,7 @@
     .stat-number { font-size:1.8rem; font-weight:700; color:#0369a1; }
     .stat-icon { font-size:1.8rem; color:#0ea5e9; opacity:.5; }
 
-    .section-box { background:#f8fafc; border-radius:1.5rem; padding:1.5rem; border:1px solid #e2e8f0; display:flex; flex-direction:column; gap:1rem; }
+    .section-box { background:#f8fafc; border-radius:1.5rem; padding:1.5rem; border:1px solid #e2e8f0; display:flex; flex-direction:column; gap:1rem; width:100%; }
     .month-selector {
       display:flex; align-items:center; justify-content:space-between;
       background:#f0f4fa; border-radius:2.5rem; padding:.5rem 1.2rem;
@@ -116,7 +116,7 @@
     .message.error { color:#dc2626; background:#fee2e2; }
 
     .admin-calendar-table { width:100%; border-collapse:collapse; background:#fff; border-radius:1rem; overflow:hidden; font-size:.85rem; margin-top:.5rem; }
-    .admin-calendar-table th, .admin-calendar-table td { border:1px solid #e2e8f0; padding:.5rem; text-align:center; }
+    .admin-calendar-table th, .admin-calendar-table td { border:1px solid #e2e8f0; padding:.6rem; text-align:center; }
     .admin-calendar-table th { background:#0ea5e9; color:#fff; }
   </style>
 </head>
@@ -244,7 +244,7 @@
       <h4 style="color:#0369a1; font-size:1rem; margin-top:.5rem;"><i class="fas fa-calendar"></i> 1. تقويم الطلبات (الشهر المختار: O & Call)</h4>
       <div style="overflow-x:auto;" id="requestsCalendarContainer"></div>
 
-      <h4 style="color:#0369a1; font-size:1rem; margin-top:1.5rem;"><i class="fas fa-calendar-alt"></i> 2. تقويم الإجازات السنوية (للسنة القادمة: AL)</h4>
+      <h4 style="color:#0369a1; font-size:1rem; margin-top:1.5rem;"><i class="fas fa-calendar-alt"></i> 2. تقويم الإجازات السنوية (خطة السنة كاملة: AL)</h4>
       <div style="overflow-x:auto;" id="annualLeaveCalendarContainer"></div>
     </div>
 
@@ -354,7 +354,6 @@
     };
   }
 
-  // التبديل بين أنواع الإجازات (O, Call, AL)
   document.querySelectorAll('.leave-type-selector button').forEach(btn => {
     btn.onclick = function() {
       document.querySelectorAll('.leave-type-selector button').forEach(b => b.classList.remove('active'));
@@ -504,7 +503,7 @@
     reqHtml += `<th>إجراءات</th></tr>`;
 
     doctors.forEach(doc => {
-      reqHtml += `<tr><td style="font-weight:600;text-align:right;">${doc.name}</td><td>${doc.staffNo}</td>`;
+      reqHtml += `<tr><td style="font-weight:600;text-align:right;white-space:nowrap;">${doc.name}</td><td>${doc.staffNo}</td>`;
       for(let d=1; d<=31; d++){
         const b = all.find(x => x.staffNo === doc.staffNo && Number(x.day) === d && (x.leaveType === 'O' || x.leaveType === 'Call'));
         let cellText = '';
@@ -520,25 +519,24 @@
     reqHtml += `</table>`;
     document.getElementById('requestsCalendarContainer').innerHTML = reqHtml;
 
-    // 2. تقويم الإجازات السنوية (سنة كاملة: AL)
-    let annHtml = `<table class="admin-calendar-table"><tr><th>الطبيب</th><th>الرقم</th><th>الشهر</th>`;
-    for(let d=1; d<=31; d++) annHtml += `<th>${d}</th>`;
+    // 2. تقويم الإجازات السنوية (صف واحد لكل طبيب مع أعمدة الأشهر الـ 12)
+    let annHtml = `<table class="admin-calendar-table"><tr><th>الطبيب</th><th>الرقم</th>`;
+    const monthsCode = ['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10','2026-11','2026-12'];
+    const monthsName = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    
+    monthsName.forEach(m => { annHtml += `<th>${m}</th>`; });
     annHtml += `</tr>`;
 
     doctors.forEach(doc => {
-      annHtml += `<tr><td style="font-weight:600;text-align:right;" rowspan="12">${doc.name}</td><td rowspan="12">${doc.staffNo}</td>`;
-      const months = ['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10','2026-11','2026-12'];
-      months.forEach((ym, idx) => {
-        if(idx > 0) annHtml += `<tr>`;
-        annHtml += `<td style="font-size:.8rem;background:#f1f5f9;">${ym}</td>`;
-        for(let d=1; d<=31; d++){
-          const b = all.find(x => x.staffNo === doc.staffNo && x.yearMonth === ym && Number(x.day) === d && x.leaveType === 'AL');
-          let cellText = b ? 'AL' : '';
-          let bg = b && b.status === 'Approved' ? '#d1fae5' : b ? '#fef3c7' : '';
-          annHtml += `<td style="background:${bg};font-size:.75rem;">${cellText}</td>`;
-        }
-        annHtml += `</tr>`;
+      annHtml += `<tr><td style="font-weight:600;text-align:right;white-space:nowrap;">${doc.name}</td><td style="font-weight:600;">${doc.staffNo}</td>`;
+      monthsCode.forEach(ym => {
+        const mineAL = all.filter(x => x.staffNo === doc.staffNo && x.yearMonth === ym && x.leaveType === 'AL');
+        mineAL.sort((a,b) => a.day - b.day);
+        const daysStr = mineAL.map(b => b.day).join(', ');
+        const bg = mineAL.length && mineAL.every(b => b.status === 'Approved') ? '#d1fae5' : mineAL.length ? '#fef3c7' : '';
+        annHtml += `<td style="background:${bg};font-size:.8rem;text-align:center;">${daysStr ? 'أيام: ' + daysStr : '-'}</td>`;
       });
+      annHtml += `</tr>`;
     });
     annHtml += `</table>`;
     document.getElementById('annualLeaveCalendarContainer').innerHTML = annHtml;
