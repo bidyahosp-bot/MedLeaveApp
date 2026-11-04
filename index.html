@@ -247,7 +247,10 @@
     <div class="section-box" id="adminDashboardSection" style="display:none;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
         <h3 style="font-size:1.1rem; color:#0c4a6e;"><i class="fas fa-user-shield"></i> لوحة تحكم المدير - خطة الإجازات والطلبات</h3>
-        <button class="btn" id="exportBtn"><i class="fas fa-file-excel"></i> تصدير خطة الإجازات Excel</button>
+        <div style="display:flex; gap:.5rem; align-items:center;">
+          <button class="btn btn-sm btn-outline" id="refreshAdminBtn"><i class="fas fa-sync-alt"></i> تحديث البيانات</button>
+          <button class="btn btn-sm" id="exportBtn"><i class="fas fa-file-excel"></i> تصدير Excel</button>
+        </div>
       </div>
 
       <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
@@ -275,6 +278,15 @@
   let selectedLeaveType = 'O';
   let isAdminMode = false;
   let dashboardData = { bookings: [], myBookings: [], minDays: 2, maxDays: 3, doctors: [] };
+
+  function normalizeYM(ym){
+    if(!ym) return '';
+    const parts = String(ym).trim().split('-');
+    if(parts.length === 2){
+      return `${parts[0]}-${String(parts[1]).padStart(2,'0')}`;
+    }
+    return String(ym).trim();
+  }
 
   function getYM(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
   function nextMonth(){
@@ -425,6 +437,11 @@
     render();
   }
 
+  document.getElementById('refreshAdminBtn').onclick = () => {
+    loadDashboard();
+    alert('تم تحديث البيانات بنجاح!');
+  };
+
   function render(){
     if(session.role === 'doctor') {
       renderDoctorDashboard();
@@ -437,7 +454,7 @@
     const all = dashboardData.bookings || [];
     const mine = dashboardData.myBookings || [];
     const currentYM = getYM(viewDate);
-    const myMonthBookings = mine.filter(b => b.yearMonth === currentYM);
+    const myMonthBookings = mine.filter(b => normalizeYM(b.yearMonth) === currentYM);
     const bookedOffCount = myMonthBookings.filter(b => b.leaveType === 'O').length;
     const maxD = dashboardData.maxDays ?? 3;
 
@@ -468,7 +485,7 @@
     let html='';
     for(let d=1; d<=dim; d++){
       let cls='day-cell';
-      const isBooked = all.some(b => b.day === d && b.staffNo === session.staffNo);
+      const isBooked = all.some(b => Number(b.day) === d && normalizeYM(b.yearMonth) === currentYM && b.staffNo === session.staffNo);
       if(isBooked) cls+=' booked';
       if(selectedDays.includes(d)) cls+=' selected';
       html += `<div class="${cls}" data-day="${d}">${d}</div>`;
@@ -513,9 +530,9 @@
       const rows = document.querySelectorAll('.period-row');
       let periods = [];
       for(let row of rows) {
-        const startYM = row.querySelector('.start-ym').value;
+        const startYM = normalizeYM(row.querySelector('.start-ym').value);
         const startDay = row.querySelector('.start-day').value;
-        const endYM = row.querySelector('.end-ym').value;
+        const endYM = normalizeYM(row.querySelector('.end-ym').value);
         const endDay = row.querySelector('.end-day').value;
         if(startYM && startDay && endYM && endDay) {
           periods.push({ startYM, startDay, endYM, endDay });
@@ -542,9 +559,9 @@
   function renderAdminDashboard(){
     const all = dashboardData.bookings || [];
     const doctors = dashboardData.doctors || [];
-    const selectedMonthYM = document.getElementById('adminMonthPicker').value || getYM(new Date());
+    const selectedMonthYM = normalizeYM(document.getElementById('adminMonthPicker').value || getYM(new Date()));
 
-    // 1. تقويم الطلبات (يُعرض للشهر المختار فقط، ويقتصر على O و Call)
+    // 1. تقويم الطلبات (للشهر المحدد: O و Call فقط)
     let reqHtml = `<table class="admin-calendar-table"><tr><th>الطبيب</th><th>الرقم</th>`;
     for(let d=1; d<=31; d++) reqHtml += `<th>${d}</th>`;
     reqHtml += `<th>إجراءات</th></tr>`;
@@ -552,8 +569,7 @@
     doctors.forEach(doc => {
       reqHtml += `<tr><td style="font-weight:600;text-align:right;white-space:nowrap;">${doc.name}</td><td>${doc.staffNo}</td>`;
       for(let d=1; d<=31; d++){
-        // فلترة دقيقة لتقويم الطلبات: الشهر المحدد + O و Call فقط
-        const b = all.find(x => x.staffNo === doc.staffNo && x.yearMonth === selectedMonthYM && Number(x.day) === d && (x.leaveType === 'O' || x.leaveType === 'Call'));
+        const b = all.find(x => x.staffNo === doc.staffNo && normalizeYM(x.yearMonth) === selectedMonthYM && Number(x.day) === d && (x.leaveType === 'O' || x.leaveType === 'Call'));
         let cellText = '';
         let bg = '';
         if(b) {
@@ -578,8 +594,7 @@
     doctors.forEach(doc => {
       annHtml += `<tr><td style="font-weight:600;text-align:right;white-space:nowrap;">${doc.name}</td><td style="font-weight:600;">${doc.staffNo}</td>`;
       monthsCode.forEach(ym => {
-        // فلترة دقيقة لتقويم الإجازات: AL و ML فقط
-        const mineLeaves = all.filter(x => x.staffNo === doc.staffNo && x.yearMonth === ym && (x.leaveType === 'AL' || x.leaveType === 'ML'));
+        const mineLeaves = all.filter(x => x.staffNo === doc.staffNo && normalizeYM(x.yearMonth) === ym && (x.leaveType === 'AL' || x.leaveType === 'ML'));
         mineLeaves.sort((a,b) => a.day - b.day);
         const daysStr = mineLeaves.map(b => `${b.day}(${b.leaveType})`).join(', ');
         const hasML = mineLeaves.some(b => b.leaveType === 'ML');
