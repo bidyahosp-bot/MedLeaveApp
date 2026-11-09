@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MedLeave | مجمع بدية الصحي</title>
+  <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -101,7 +102,7 @@
     .nav-arrow:disabled { opacity:.3; cursor:not-allowed; }
     .booked-list {
       background:#f8fafc; border-radius:1.5rem; padding:1rem 1.5rem;
-      border:1px solid #e9f0f7; max-height:220px; overflow-y:auto;
+      border:1px solid #e9f0f7; max-height:250px; overflow-y:auto;
     }
     .booked-item {
       display:flex; align-items:center; justify-content:space-between;
@@ -144,7 +145,7 @@
     <div id="loginPanel" class="login-card">
       <div class="input-group">
         <i class="fas fa-id-badge"></i>
-        <input type="text" id="staffInput" placeholder="الرقم الوظيفي">
+        <input type="text" id="staffInput" placeholder="الرقم الوظيفي / ADMIN">
       </div>
       <div class="input-group">
         <i class="fas fa-lock"></i>
@@ -172,11 +173,11 @@
         <div class="stat-info"><h4>الشهر الحالي</h4><div class="stat-number" id="currentMonthLabel" style="font-size: 1.4rem;">-</div></div>
         <i class="fas fa-calendar-alt stat-icon"></i>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" id="bookedStatCard">
         <div class="stat-info"><h4>الأيام المحجوزة</h4><div class="stat-number" id="bookedCount">0</div></div>
         <i class="fas fa-bookmark stat-icon"></i>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" id="remainingStatCard">
         <div class="stat-info"><h4>المتبقي من الأوف</h4><div class="stat-number" id="remainingCount">0</div></div>
         <i class="fas fa-hourglass-half stat-icon"></i>
       </div>
@@ -188,7 +189,7 @@
       <button class="nav-arrow" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
     </div>
 
-    <h4 style="font-weight:600;"><i class="fas fa-list-check"></i> الأيام المحجوزة: <span id="listMonthLabel">-</span></h4>
+    <h4 style="font-weight:600;"><i class="fas fa-list-check"></i> سجل الحجوزات لشهر: <span id="listMonthLabel">-</span></h4>
     <div class="booked-list" id="bookedListContainer"></div>
 
     <div class="action-row" id="doctorActions">
@@ -197,15 +198,15 @@
       <span class="message" id="bookingMessage"></span>
     </div>
 
-    <div id="adminActions" style="display:none; gap:1rem; flex-wrap:wrap; margin-top: 1rem;">
-      <button class="btn btn-outline" id="exportBtn"><i class="fas fa-file-excel"></i> تصدير كشف Excel</button>
+    <div id="adminActions" style="display:none; gap:1rem; flex-wrap:wrap; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0;">
+      <button class="btn btn-outline" id="exportBtn"><i class="fas fa-file-excel"></i> تصدير كشف Excel للمدير</button>
     </div>
   </div>
 </div>
 
 <script>
 (function(){
-  // ⚠️ ضع رابط النشر الخاص بك هنا (ينتهي بـ /exec)
+  // ⚠️ ضع رابط النشر الخاص بك هنا
   const API_URL = 'https://script.google.com/macros/s/AKfycbz1m8Pk8t_wopbtFhV06UL9iq4oqXE4h7Q3COkrgTlcUTCLzIAqHozp_qJ5YrFq4lub/exec';
 
   let session = null;
@@ -213,10 +214,8 @@
   let selectedDay = null;
   let dashboardData = { bookings: [], myBookings: [], minDays: 2, maxDays: 3, doctors: [] };
 
-  // تحويل التاريخ إلى صيغة YYYY-MM
   function getYM(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
   
-  // تحديد الشهر القادم كحد أقصى
   function nextMonth(){
     const n=new Date(); let y=n.getFullYear(), m=n.getMonth()+2;
     if(m>12){m-=12;y++;} return new Date(y,m-1,1);
@@ -245,7 +244,7 @@
         data = JSON.parse(text);
       } catch(e) {
         console.error("الرد ليس بصيغة JSON. تأكد من إعدادات النشر:", text);
-        throw new Error("Server returned HTML instead of JSON. Check deployment.");
+        throw new Error("Server returned HTML instead of JSON.");
       }
       
       setStatus('online');
@@ -253,7 +252,7 @@
     } catch(e){
       console.error('[API error]', e);
       setStatus('offline');
-      alert('فشل الاتصال بالخادم. تأكد من الإنترنت أو أعد نشر Apps Script.');
+      alert('فشل الاتصال بالخادم. تأكد من الإنترنت.');
       return { ok:false, error: e.message };
     }
   }
@@ -262,23 +261,39 @@
   document.getElementById('loginBtn').onclick = async () => {
     const staffNo = document.getElementById('staffInput').value.trim();
     const password = document.getElementById('passInput').value;
-    if(!staffNo) return showMsg('الرجاء إدخال الرقم الوظيفي','error');
+    if(!staffNo) return alert('الرجاء إدخال الرقم الوظيفي');
 
     const r = await api('login', { staffNo, password });
     
     if(!r || !r.ok) {
-       return showMsg(r?.error || 'فشل تسجيل الدخول', 'error');
+       return alert(r?.error || 'فشل تسجيل الدخول');
     }
 
     session = r;
+    
+    // إخفاء شاشة الدخول وإظهار بيانات المستخدم
     document.getElementById('loginPanel').style.display='none';
     document.getElementById('userDisplay').style.display='flex';
     document.getElementById('displayName').textContent = r.name;
     document.getElementById('avatarLetter').textContent = (r.name||'?').charAt(0).toUpperCase();
     
-    // إظهار/إخفاء العناصر حسب الصلاحية
-    document.getElementById('adminActions').style.display = r.role==='admin' ? 'flex' : 'none';
-    document.getElementById('doctorActions').style.display = r.role==='doctor' ? 'flex' : 'none';
+    // إظهار لوحة التحكم
+    document.getElementById('dashboardContent').style.display='block';
+
+    // إعداد واجهة المدير
+    if (r.role === 'admin') {
+      document.getElementById('adminActions').style.display = 'flex';
+      document.getElementById('doctorActions').style.display = 'none';
+      // إخفاء مربع "المتبقي من الأوف" للمدير لأنه لا يحتاجه
+      document.getElementById('remainingStatCard').style.display = 'none';
+      document.getElementById('bookedStatCard').style.display = 'none';
+    } else {
+      // إعداد واجهة الطبيب
+      document.getElementById('adminActions').style.display = 'none';
+      document.getElementById('doctorActions').style.display = 'flex';
+      document.getElementById('remainingStatCard').style.display = 'flex';
+      document.getElementById('bookedStatCard').style.display = 'flex';
+    }
 
     if(r.notifications && r.notifications.length){
       renderNotifications(r.notifications);
@@ -286,8 +301,6 @@
       document.getElementById('notifArea').innerHTML='';
     }
 
-    document.getElementById('dashboardContent').style.display = 'block';
-    
     viewDate = new Date(MAX_MONTH);
     await loadDashboard();
   };
@@ -324,7 +337,7 @@
       staffNo: session.staffNo, yearMonth: ym, role: session.role
     });
     if(!r.ok) {
-        return showMsg(r.error,'error');
+        return alert(r.error);
     }
     dashboardData = r;
     render();
@@ -332,17 +345,17 @@
 
   function render(){
     const all = dashboardData.bookings || [];
-    // الأطباء يرون حجوزاتهم فقط، المدير يرى الكل
     const mine = session.role==='doctor'
       ? all.filter(b=>b.staffNo===session.staffNo)
       : [];
     const cnt = mine.length;
     const maxD = dashboardData.maxDays ?? 3;
 
-    document.getElementById('bookedCount').textContent = cnt;
-    document.getElementById('remainingCount').textContent = Math.max(0, maxD - cnt);
-    
-    // تنسيق التاريخ بالعربية
+    if (session.role === 'doctor') {
+      document.getElementById('bookedCount').textContent = cnt;
+      document.getElementById('remainingCount').textContent = Math.max(0, maxD - cnt);
+    }
+
     const label = viewDate.toLocaleString('ar-OM',{month:'long',year:'numeric'});
     document.getElementById('currentMonthLabel').textContent = label;
     document.getElementById('monthTitle').textContent = label;
@@ -372,13 +385,13 @@
           const r = session.role==='admin'
             ? await api('adminUpdateBooking', { bookingId:id, subAction:'delete' })
             : await api('cancelBooking', { id, staffNo: session.staffNo });
-          if(r.ok){ showMsg('تم الحذف بنجاح','success'); await loadDashboard(); }
-          else showMsg(r.error,'error');
+          if(r.ok){ await loadDashboard(); }
+          else alert(r.error);
         };
       });
     }
 
-    // عرض منتقي الأيام
+    // عرض منتقي الأيام (للأطباء فقط)
     const picker = document.getElementById('dayPickerContainer');
     if(session.role==='doctor'){
       const year = viewDate.getFullYear();
@@ -398,11 +411,10 @@
           picker.querySelectorAll('.selected').forEach(e=>e.classList.remove('selected'));
           this.classList.add('selected');
           selectedDay = +this.dataset.day;
-          document.getElementById('bookingMessage').classList.remove('show');
         };
       });
     } else {
-      picker.innerHTML = '<div style="padding: 1rem; color: #64748b;">أنت مسجل كمدير. يمكنك رؤية وحذف حجوزات الجميع.</div>';
+      picker.innerHTML = ''; // المدير لا يرى منتقي الأيام
     }
 
     selectedDay = null;
@@ -410,15 +422,14 @@
     document.getElementById('nextMonthBtn').disabled = viewDate >= MAX_MONTH;
   }
 
-  /* ---------- Actions ---------- */
   document.getElementById('addDayBtn').onclick = async ()=>{
-    if(!selectedDay) return showMsg('الرجاء اختيار يوم أولاً','error');
+    if(!selectedDay) return alert('الرجاء اختيار يوم أولاً');
     const ym = getYM(viewDate);
     const r = await api('bookDay', {
       staffNo: session.staffNo, doctorName: session.name, yearMonth: ym, day: selectedDay
     });
-    if(r.ok){ showMsg(`تم حجز يوم ${selectedDay} بنجاح!`,'success'); await loadDashboard(); }
-    else showMsg(r.error,'error');
+    if(r.ok){ alert(`تم حجز يوم ${selectedDay} بنجاح!`); await loadDashboard(); }
+    else alert(r.error);
   };
 
   document.getElementById('prevMonthBtn').onclick = ()=>{
@@ -435,16 +446,9 @@
   document.getElementById('exportBtn').onclick = async ()=>{
     const r = await api('exportExcel', { yearMonth: getYM(viewDate) });
     if(r.ok) window.open(r.downloadUrl, '_blank');
-    else showMsg(r.error||'فشل التصدير','error');
+    else alert(r.error||'فشل التصدير');
   };
 
-  function showMsg(t, c){
-    const m = document.getElementById('bookingMessage');
-    if(!m) return;
-    m.textContent = t;
-    m.className = 'message show ' + c;
-    setTimeout(()=>{ m.classList.remove('show'); }, 4000);
-  }
   function esc(t){ return String(t).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 
   setStatus('online');
