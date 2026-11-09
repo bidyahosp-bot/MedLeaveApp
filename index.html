@@ -286,6 +286,8 @@
       document.getElementById('notifArea').innerHTML='';
     }
 
+    document.getElementById('dashboardContent').style.display = 'block';
+    
     viewDate = new Date(MAX_MONTH);
     await loadDashboard();
   };
