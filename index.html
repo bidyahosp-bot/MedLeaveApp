@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MedLeave | نظام إدارة الإجازات والطلبات</title>
+  <title>MedLeave | مجمع بدية الصحي</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
+      font-family: 'Tajawal', -apple-system, sans-serif;
       background:linear-gradient(135deg,#f0f6fc,#e2ecf5);
-      min-height:100vh; padding:1rem; color:#1e293b;
+      min-height:100vh; padding:1.5rem; color:#1e293b;
       display:flex; justify-content:center; align-items:flex-start;
     }
     .app-container {
-      max-width:98%; width:100%; background:rgba(255,255,255,.98);
-      backdrop-filter:blur(20px); border-radius:1.5rem; padding:1.5rem;
+      max-width:1100px; width:100%; background:rgba(255,255,255,.95);
+      backdrop-filter:blur(20px); border-radius:2rem; padding:2rem;
       box-shadow:0 25px 50px -12px rgba(0,0,0,.15);
       display:flex; flex-direction:column; gap:1.5rem;
     }
@@ -28,38 +29,40 @@
       display:flex; align-items:center; justify-content:center; font-size:1.5rem;
       box-shadow:0 12px 20px -10px rgba(14,165,233,.4);
     }
-    .logo-text { font-size:1.7rem; font-weight:700; color:#0c4a6e; }
-    .logo-text span { color:#0ea5e9; }
-    
+    .logo-text { font-size:1.7rem; font-weight:700;
+      background:linear-gradient(135deg,#0369a1,#0c4a6e);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .logo-text span { font-weight:500; }
     .login-card {
-      background:#f8fafc; border-radius:1.5rem; padding:1rem 1.5rem;
-      display:flex; flex-direction:column; gap:.5rem; width:300px;
+      background:#f8fafc; border-radius:2rem; padding:.8rem 1.5rem;
+      display:flex; flex-wrap:wrap; align-items:center; gap:.7rem;
       box-shadow:0 4px 12px rgba(0,0,0,.05); border:1px solid #e2e8f0;
     }
     .input-group {
       display:flex; align-items:center; gap:.5rem;
-      background:#fff; border-radius:2.5rem; padding:.5rem 1rem;
-      border:1px solid #dce3eb; margin-bottom:.3rem;
+      background:#fff; border-radius:2.5rem; padding:.4rem 1rem;
+      border:1px solid #dce3eb;
     }
     .input-group i { color:#5b7c9b; font-size:.9rem; }
     .input-group input {
-      border:none; background:transparent; padding:.3rem;
-      font-size:.9rem; font-weight:500; width:100%; outline:none; color:#0f172a;
+      border:none; background:transparent; padding:.5rem .2rem;
+      font-size:.9rem; font-weight:500; width:130px; outline:none; color:#0f172a;
+      font-family: 'Tajawal', sans-serif;
     }
     .btn {
       border:none; border-radius:2.5rem; padding:.6rem 1.5rem;
       font-weight:600; font-size:.9rem; cursor:pointer;
       background:linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff;
       box-shadow:0 8px 18px -6px rgba(14,165,233,.5);
-      display:inline-flex; align-items:center; justify-content:center; gap:.4rem; transition:.3s;
+      display:inline-flex; align-items:center; gap:.4rem; transition:.3s;
+      font-family: 'Tajawal', sans-serif;
     }
     .btn:hover { transform:translateY(-2px); }
     .btn-outline { background:#fff; color:#0369a1; border:1px solid #cbd5e1; box-shadow:none; }
-    .btn-sm { padding:.3rem .8rem; font-size:.8rem; }
-    .btn-danger { background:linear-gradient(135deg,#ef4444,#dc2626); box-shadow:0 8px 18px -6px rgba(239,68,68,.5); }
-    .btn-success { background:linear-gradient(135deg,#22c55e,#16a34a); box-shadow:0 8px 18px -6px rgba(34,197,94,.5); }
-
-    .user-welcome { display:flex; align-items:center; gap:.7rem; background:#e0f2fe; border-radius:3rem; padding:.3rem 1.2rem .3rem .3rem; }
+    .btn-sm { padding:.4rem 1rem; font-size:.8rem; }
+    .user-welcome { display:flex; align-items:center; gap:.7rem;
+      background:#e0f2fe; border-radius:3rem; padding:.3rem 1.2rem .3rem .3rem; }
     .avatar {
       background:linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff;
       width:36px; height:36px; border-radius:50%;
@@ -69,55 +72,66 @@
       display:flex; justify-content:space-between; align-items:center;
       font-size:.8rem; background:#f8fafc; border-radius:1rem; padding:.5rem 1rem;
     }
-    .status-dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-left:6px; background:#22c55e; }
-    .status-dot.syncing { background:#f59e0b; }
-    .status-dot.offline { background:#ef4444; }
-
-    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; }
+    .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;background:#22c55e;}
+    .status-dot.syncing{background:#f59e0b;}
+    .status-dot.offline{background:#ef4444;}
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:1rem; }
     .stat-card {
       background:#f9fcff; border-radius:1.5rem; padding:1.2rem;
       box-shadow:0 8px 20px -8px rgba(0,32,64,.08); border:1px solid #eef3f9;
       display:flex; align-items:center; justify-content:space-between;
     }
     .stat-info h4 { font-size:.8rem; text-transform:uppercase; color:#51718c; margin-bottom:.3rem; }
-    .stat-number { font-size:1.8rem; font-weight:700; color:#0369a1; }
+    .stat-number {
+      font-size:2rem; font-weight:700;
+      background:linear-gradient(135deg,#0369a1,#0c4a6e);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
     .stat-icon { font-size:1.8rem; color:#0ea5e9; opacity:.5; }
-
-    .section-box { background:#f8fafc; border-radius:1.5rem; padding:1.5rem; border:1px solid #e2e8f0; display:flex; flex-direction:column; gap:1rem; width:100%; }
     .month-selector {
       display:flex; align-items:center; justify-content:space-between;
       background:#f0f4fa; border-radius:2.5rem; padding:.5rem 1.2rem;
     }
-    .month-title { font-weight:700; font-size:1.1rem; color:#0c4a6e; }
-    .nav-arrow { background:#fff; border:none; border-radius:50%; width:36px; height:36px; cursor:pointer; box-shadow:0 5px 12px rgba(0,0,0,.05); }
-
-    .day-picker { display:flex; flex-wrap:wrap; gap:.4rem; background:#fff; padding:1rem; border-radius:1rem; border:1px solid #dce5ef; }
+    .month-title { font-weight:700; font-size:1.2rem; color:#0c4a6e; }
+    .nav-arrow {
+      background:#fff; border:none; border-radius:50%; width:36px; height:36px;
+      cursor:pointer; font-size:1rem; box-shadow:0 5px 12px rgba(0,0,0,.05);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .nav-arrow:disabled { opacity:.3; cursor:not-allowed; }
+    .booked-list {
+      background:#f8fafc; border-radius:1.5rem; padding:1rem 1.5rem;
+      border:1px solid #e9f0f7; max-height:220px; overflow-y:auto;
+    }
+    .booked-item {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:.6rem 0; border-bottom:1px solid #e2e8f0;
+    }
+    .booked-item:last-child { border-bottom:none; }
+    .day-badge { background:#dbeafe; color:#1e3a8a; font-weight:700; padding:.3rem .8rem; border-radius:2rem; font-size:.85rem; }
+    .delete-btn { color:#ef4444; cursor:pointer; opacity:.7; background:none; border:none; font-size:1rem; }
+    .delete-btn:hover { opacity:1; }
+    .action-row { display:flex; flex-wrap:wrap; align-items:center; gap:1rem; }
+    .day-picker { display:flex; flex-wrap:wrap; gap:.4rem; background:#fff; padding:.8rem; border-radius:1.5rem; border:1px solid #dce5ef; }
     .day-cell {
-      width:38px; height:38px; border-radius:10px;
+      width:36px; height:36px; border-radius:10px;
       display:flex; align-items:center; justify-content:center;
       font-weight:600; background:#f1f5f9; cursor:pointer; font-size:.85rem; transition:.2s;
     }
-    .day-cell:hover:not(.booked) { background:#e0f2fe; transform:scale(1.05); }
-    .day-cell.selected { background:#0ea5e9; color:#fff; }
-    .day-cell.booked { background:#fecaca; color:#7f1d1d; cursor:not-allowed; }
-
-    .leave-type-selector { display:flex; gap:.5rem; margin-bottom:.5rem; flex-wrap:wrap; }
-    .type-radio {
-      padding:.4rem 1rem; border-radius:1rem; border:1px solid #cbd5e1; background:#fff; font-size:.85rem; font-weight:600; cursor:pointer;
-    }
-    .type-radio.active { background:#0ea5e9; color:#fff; border-color:#0ea5e9; }
-
-    .booked-list { background:#fff; border-radius:1rem; padding:1rem; border:1px solid #e2e8f0; max-height:220px; overflow-y:auto; }
-    .booked-item { display:flex; align-items:center; justify-content:space-between; padding:.6rem 0; border-bottom:1px solid #f1f5f9; font-size:.9rem; }
-
+    .day-cell:hover:not(.booked):not(.disabled) { background:#e0f2fe; transform:scale(1.1); }
+    .day-cell.selected { background:#0ea5e9; color:#fff; transform:scale(1.1); }
+    .day-cell.booked { background:#fecaca; color:#7f1d1d; cursor:not-allowed; text-decoration:line-through; }
+    .day-cell.disabled { opacity:.5; pointer-events:none; }
     .message { font-size:.85rem; padding:.5rem 1rem; border-radius:1rem; display:none; }
     .message.show { display:inline-block; }
     .message.success { color:#059669; background:#d1fae5; }
     .message.error { color:#dc2626; background:#fee2e2; }
-
-    .admin-calendar-table { width:100%; border-collapse:collapse; background:#fff; border-radius:1rem; overflow:hidden; font-size:.85rem; margin-top:.5rem; }
-    .admin-calendar-table th, .admin-calendar-table td { border:1px solid #e2e8f0; padding:.6rem; text-align:center; }
-    .admin-calendar-table th { background:#0ea5e9; color:#fff; }
+    .notif-banner { background:#fef3c7; border:1px solid #fcd34d; border-radius:1rem; padding:.8rem 1rem; font-size:.85rem; margin-bottom: 1rem; }
+    .notif-banner button { background:none; border:none; color:#92400e; cursor:pointer; float:left; font-weight:600; }
+    @media (max-width:650px) {
+      .app-container { padding:1.2rem; }
+      .login-card { flex-direction:column; align-items:stretch; }
+    }
   </style>
 </head>
 <body>
@@ -127,178 +141,92 @@
       <div class="logo-icon"><i class="fas fa-calendar-check"></i></div>
       <div class="logo-text">Med<span>Leave</span></div>
     </div>
-
-    <!-- لوحة تسجيل الدخول -->
     <div id="loginPanel" class="login-card">
-      <div style="font-weight:700; font-size:.95rem; color:#0c4a6e; text-align:center;">تسجيل الدخول</div>
       <div class="input-group">
         <i class="fas fa-id-badge"></i>
-        <input type="text" id="staffInput" placeholder="أدخل الرقم الوظيفي">
+        <input type="text" id="staffInput" placeholder="الرقم الوظيفي">
       </div>
-      <div class="input-group" id="adminPassGroup" style="display:none;">
+      <div class="input-group">
         <i class="fas fa-lock"></i>
-        <input type="password" id="passInput" placeholder="كلمة مرور المدير">
+        <input type="password" id="passInput" placeholder="كلمة المرور (للمدير)">
       </div>
       <button class="btn" id="loginBtn"><i class="fas fa-right-to-bracket"></i> دخول</button>
-      <div style="text-align:center; margin-top:.3rem;">
-        <a href="#" id="toggleAdminBtn" style="font-size:0.75rem; color:#0ea5e9; text-decoration:none; font-weight:600;">دخول المدير (الإدارة)</a>
-      </div>
     </div>
-
-    <!-- شاشة الترحيب بالمستخدم -->
     <div id="userDisplay" style="display:none;" class="user-welcome">
       <div class="avatar" id="avatarLetter">?</div>
-      <span id="displayName" style="font-weight:600;">-</span>
-      <button class="btn btn-outline btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> خروج</button>
+      <span id="displayName">-</span>
+      <button class="btn btn-outline btn-sm" id="logoutBtn" title="تسجيل خروج"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </div>
 
   <div class="status-bar">
-    <span><span class="status-dot" id="statusDot"></span><span id="statusText">متصل بالنظام</span></span>
-    <span style="font-size:.7rem; color:#94a3b8;">📊 Google Sheets Database</span>
+    <span><span class="status-dot" id="statusDot"></span><span id="statusText">جاهز</span></span>
+    <span style="font-size:.7rem;color:#94a3b8;">📊 Google Sheets</span>
   </div>
 
   <div id="notifArea"></div>
 
-  <!-- لوحة تحكم الموظف والمدير -->
-  <div id="dashboardContent" style="display:none; display:flex; flex-direction:column; gap:1.5rem;">
-    
-    <!-- إحصائيات الموظف -->
-    <div class="stats-grid" id="doctorStats">
+  <div id="dashboardContent" style="display:none;">
+    <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-info"><h4>الشهر الحالي</h4><div class="stat-number" id="currentMonthLabel">-</div></div>
+        <div class="stat-info"><h4>الشهر الحالي</h4><div class="stat-number" id="currentMonthLabel" style="font-size: 1.4rem;">-</div></div>
         <i class="fas fa-calendar-alt stat-icon"></i>
       </div>
       <div class="stat-card">
-        <div class="stat-info"><h4>أيام Off المحجوزة</h4><div class="stat-number" id="bookedCount">0</div></div>
+        <div class="stat-info"><h4>الأيام المحجوزة</h4><div class="stat-number" id="bookedCount">0</div></div>
         <i class="fas fa-bookmark stat-icon"></i>
       </div>
       <div class="stat-card">
-        <div class="stat-info"><h4>المتبقي من Off</h4><div class="stat-number" id="remainingCount">3</div></div>
+        <div class="stat-info"><h4>المتبقي من الأوف</h4><div class="stat-number" id="remainingCount">0</div></div>
         <i class="fas fa-hourglass-half stat-icon"></i>
       </div>
     </div>
 
-    <!-- قسم الموظف لحجز الأيام -->
-    <div class="section-box" id="doctorBookingSection">
-      <h3 style="font-size:1rem; color:#0c4a6e;"><i class="fas fa-calendar-days"></i> حجز الإجازات والطلبات</h3>
-      
-      <div class="leave-type-selector">
-        <button class="type-radio active" data-type="O">يوم Off (O - بحد أقصى 3 أيام)</button>
-        <button class="type-radio" data-type="Call">مناوبة (Call)</button>
-        <button class="type-radio" data-type="AL">إجازة سنوية (AL)</button>
-        <button class="type-radio" data-type="ML">إجازة وضع (ML)</button>
-      </div>
+    <div class="month-selector">
+      <button class="nav-arrow" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
+      <div class="month-title" id="monthTitle">-</div>
+      <button class="nav-arrow" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+    </div>
 
-      <!-- واجهة اختيار الأيام الشهرية (لـ O و Call فقط) -->
-      <div id="calendarPickerSection">
-        <div class="month-selector">
-          <button class="nav-arrow" id="prevMonthBtn"><i class="fas fa-chevron-right"></i></button>
-          <div class="month-title" id="monthTitle">-</div>
-          <button class="nav-arrow" id="nextMonthBtn"><i class="fas fa-chevron-left"></i></button>
-        </div>
-        <p style="font-size:.85rem; color:#64748b; margin-top:.5rem;">اختر الأيام من التقويم أدناه:</p>
-        <div class="day-picker" id="dayPickerContainer"></div>
-        <div style="margin-top:.5rem;">
-          <strong>الأيام المحددة للحجز:</strong>
-          <span id="selectedDaysPreview" style="color:#0ea5e9; font-weight:700;">لا توجد أيام مختارة</span>
-        </div>
-      </div>
+    <h4 style="font-weight:600;"><i class="fas fa-list-check"></i> الأيام المحجوزة: <span id="listMonthLabel">-</span></h4>
+    <div class="booked-list" id="bookedListContainer"></div>
 
-      <!-- واجهة تقويم وفترات الإجازة السنوية أو الوضع (AL & ML) -->
-      <div id="multiPeriodSection" style="display:none; background:#fff; padding:1.2rem; border-radius:1rem; border:1px solid #dce5ef; gap:1.2rem; flex-direction:column;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-          <h4 style="font-size:.95rem; color:#0c4a6e;"><i class="fas fa-calendar-alt"></i> جدول تحديد الفترات للإجازة السنوية / الوضع (من شهر/يوم إلى شهر/يوم):</h4>
-          <button class="btn btn-sm" id="addPeriodBtn" type="button"><i class="fas fa-plus"></i> إضافة فترة أخرى</button>
-        </div>
-
-        <div id="periodsContainer" style="display:flex; flex-direction:column; gap:.8rem;">
-          <div class="period-row" style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap; background:#f8fafc; padding:.8rem; border-radius:.8rem; border:1px solid #e2e8f0;">
-            <div>
-              <label style="font-size:.8rem; font-weight:600; display:block;">من شهر:</label>
-              <input type="month" class="start-ym" value="2027-01" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; outline:none;">
-            </div>
-            <div>
-              <label style="font-size:.8rem; font-weight:600; display:block;">من يوم:</label>
-              <input type="number" class="start-day" min="1" max="31" placeholder="1" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:70px; outline:none;">
-            </div>
-            <div>
-              <label style="font-size:.8rem; font-weight:600; display:block;">إلى شهر:</label>
-              <input type="month" class="end-ym" value="2027-01" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; outline:none;">
-            </div>
-            <div>
-              <label style="font-size:.8rem; font-weight:600; display:block;">إلى يوم:</label>
-              <input type="number" class="end-day" min="1" max="31" placeholder="10" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:70px; outline:none;">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style="display:flex; justify-content:flex-end; align-items:center; margin-top:.5rem;">
-        <button class="btn btn-success" id="confirmBookingBtn"><i class="fas fa-check-circle"></i> تأكيد وحفظ الطلب</button>
-      </div>
+    <div class="action-row" id="doctorActions">
+      <div class="day-picker" id="dayPickerContainer"></div>
+      <button class="btn" id="addDayBtn"><i class="fas fa-plus-circle"></i> حجز اليوم</button>
       <span class="message" id="bookingMessage"></span>
-
-      <h4 style="font-size:.9rem; margin-top:1rem; color:#0c4a6e;"><i class="fas fa-list-check"></i> طلباتي وإجازاتي المسجلة:</h4>
-      <div class="booked-list" id="bookedListContainer"></div>
     </div>
 
-    <!-- قسم لوحة تحكم المدير -->
-    <div class="section-box" id="adminDashboardSection" style="display:none;">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-        <h3 style="font-size:1.1rem; color:#0c4a6e;"><i class="fas fa-user-shield"></i> لوحة تحكم المدير - خطة الإجازات والطلبات</h3>
-        <div style="display:flex; gap:.5rem; align-items:center;">
-          <button class="btn btn-sm btn-outline" id="refreshAdminBtn"><i class="fas fa-sync-alt"></i> تحديث البيانات</button>
-          <button class="btn btn-sm" id="exportBtn"><i class="fas fa-file-excel"></i> تصدير Excel</button>
-        </div>
-      </div>
-
-      <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
-        <label style="font-weight:600; font-size:.9rem;">اختر الشهر للطلبات (O & Call):</label>
-        <input type="month" id="adminMonthPicker" style="padding:.4rem 1rem; border-radius:1rem; border:1px solid #cbd5e1; outline:none;">
-      </div>
-
-      <h4 style="color:#0369a1; font-size:1rem; margin-top:.5rem;"><i class="fas fa-calendar"></i> 1. تقويم الطلبات (للشهر المحدد: O & Call فقط)</h4>
-      <div style="overflow-x:auto;" id="requestsCalendarContainer"></div>
-
-      <h4 style="color:#0369a1; font-size:1rem; margin-top:1.5rem;"><i class="fas fa-calendar-alt"></i> 2. تقويم الإجازات السنوية وإجازة الوضع (خطة السنة كاملة: AL & ML فقط)</h4>
-      <div style="overflow-x:auto;" id="annualLeaveCalendarContainer"></div>
+    <div id="adminActions" style="display:none; gap:1rem; flex-wrap:wrap; margin-top: 1rem;">
+      <button class="btn btn-outline" id="exportBtn"><i class="fas fa-file-excel"></i> تصدير كشف Excel</button>
     </div>
-
   </div>
 </div>
 
 <script>
 (function(){
+  // ⚠️ ضع رابط النشر الخاص بك هنا (ينتهي بـ /exec)
   const API_URL = 'https://script.google.com/macros/s/AKfycbz1m8Pk8t_wopbtFhV06UL9iq4oqXE4h7Q3COkrgTlcUTCLzIAqHozp_qJ5YrFq4lub/exec';
 
   let session = null;
   let viewDate = new Date();
-  let selectedDays = [];
-  let selectedLeaveType = 'O';
-  let isAdminMode = false;
+  let selectedDay = null;
   let dashboardData = { bookings: [], myBookings: [], minDays: 2, maxDays: 3, doctors: [] };
 
-  function normalizeYM(ym){
-    if(!ym) return '';
-    const parts = String(ym).trim().split('-');
-    if(parts.length === 2){
-      return `${parts[0]}-${String(parts[1]).padStart(2,'0')}`;
-    }
-    return String(ym).trim();
-  }
-
+  // تحويل التاريخ إلى صيغة YYYY-MM
   function getYM(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+  
+  // تحديد الشهر القادم كحد أقصى
   function nextMonth(){
     const n=new Date(); let y=n.getFullYear(), m=n.getMonth()+2;
     if(m>12){m-=12;y++;} return new Date(y,m-1,1);
   }
-  const MIN_VIEW_DATE = nextMonth();
+  const MAX_MONTH = nextMonth();
 
   function setStatus(s){
     const dot=document.getElementById('statusDot'), txt=document.getElementById('statusText');
     dot.className='status-dot '+(s==='syncing'?'syncing':s==='offline'?'offline':'');
-    txt.textContent = s==='syncing'?'جاري المزامنة...':s==='offline'?'غير متصل':'متصل بالنظام';
+    txt.textContent = s==='syncing'?'جاري المزامنة...':s==='offline'?'غير متصل':'متصل بالخادم';
   }
 
   async function api(action, payload){
@@ -307,56 +235,58 @@
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action, ...payload })
+        body: JSON.stringify({ action, ...payload }),
+        redirect: 'follow'
       });
-      const text = await res.text();
-      let data = JSON.parse(text);
+      
+      const text = await res.text(); 
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch(e) {
+        console.error("الرد ليس بصيغة JSON. تأكد من إعدادات النشر:", text);
+        throw new Error("Server returned HTML instead of JSON. Check deployment.");
+      }
+      
       setStatus('online');
       return data;
     } catch(e){
+      console.error('[API error]', e);
       setStatus('offline');
-      alert('فشل الاتصال بالخادم. تحقق من الإنترنت أو نشر Apps Script.');
+      alert('فشل الاتصال بالخادم. تأكد من الإنترنت أو أعد نشر Apps Script.');
       return { ok:false, error: e.message };
     }
   }
 
-  document.getElementById('toggleAdminBtn').onclick = (e) => {
-    e.preventDefault();
-    isAdminMode = !isAdminMode;
-    document.getElementById('adminPassGroup').style.display = isAdminMode ? 'flex' : 'none';
-    document.getElementById('staffInput').value = isAdminMode ? 'admin' : '';
-    document.getElementById('toggleAdminBtn').textContent = isAdminMode ? 'العودة لتسجيل دخول الموظفين' : 'دخول المدير (الإدارة)';
-  };
-
+  /* ---------- Login ---------- */
   document.getElementById('loginBtn').onclick = async () => {
-    let staffNo = document.getElementById('staffInput').value.trim();
+    const staffNo = document.getElementById('staffInput').value.trim();
     const password = document.getElementById('passInput').value;
-    if(isAdminMode && !staffNo) staffNo = 'admin';
-    if(!staffNo) return alert('الرجاء إدخال الرقم الوظيفي');
+    if(!staffNo) return showMsg('الرجاء إدخال الرقم الوظيفي','error');
 
-    const r = await api('login', { staffNo, password: isAdminMode ? password : '' });
-    if(!r || !r.ok) return alert(r?.error || 'فشل تسجيل الدخول');
+    const r = await api('login', { staffNo, password });
+    
+    if(!r || !r.ok) {
+       return showMsg(r?.error || 'فشل تسجيل الدخول', 'error');
+    }
 
     session = r;
     document.getElementById('loginPanel').style.display='none';
     document.getElementById('userDisplay').style.display='flex';
-    document.getElementById('dashboardContent').style.display='flex';
     document.getElementById('displayName').textContent = r.name;
     document.getElementById('avatarLetter').textContent = (r.name||'?').charAt(0).toUpperCase();
+    
+    // إظهار/إخفاء العناصر حسب الصلاحية
+    document.getElementById('adminActions').style.display = r.role==='admin' ? 'flex' : 'none';
+    document.getElementById('doctorActions').style.display = r.role==='doctor' ? 'flex' : 'none';
 
-    if(r.role === 'admin') {
-      document.getElementById('doctorStats').style.display = 'none';
-      document.getElementById('doctorBookingSection').style.display = 'none';
-      document.getElementById('adminDashboardSection').style.display = 'flex';
-      document.getElementById('adminMonthPicker').value = getYM(new Date());
+    if(r.notifications && r.notifications.length){
+      renderNotifications(r.notifications);
     } else {
-      document.getElementById('doctorStats').style.display = 'grid';
-      document.getElementById('doctorBookingSection').style.display = 'flex';
-      document.getElementById('adminDashboardSection').style.display = 'none';
-      viewDate = new Date(MIN_VIEW_DATE);
+      document.getElementById('notifArea').innerHTML='';
     }
 
-    if(r.notifications && r.notifications.length) renderNotifications(r.notifications);
+    viewDate = new Date(MAX_MONTH);
     await loadDashboard();
   };
 
@@ -368,267 +298,152 @@
     document.getElementById('notifArea').innerHTML='';
   };
 
+  /* ---------- Notifications ---------- */
   function renderNotifications(list){
-    document.getElementById('notifArea').innerHTML = `<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:1rem;padding:.8rem;font-size:.85rem;">
+    const area = document.getElementById('notifArea');
+    area.innerHTML = `<div class="notif-banner">
       <strong><i class="fas fa-bell"></i> لديك ${list.length} إشعار جديد:</strong>
-      <button id="markReadBtn" style="float:left;background:none;border:none;color:#92400e;cursor:pointer;font-weight:600;">تحديد كمقروء</button>
-      <ul style="margin-top:.4rem;padding-right:1.2rem;">${list.map(n=>`<li>${n.message}</li>`).join('')}</ul>
+      <button id="markReadBtn">تحديد كمقروء</button>
+      <ul style="margin-top:.5rem;padding-right:1.2rem;">
+        ${list.map(n=>`<li>${esc(n.message)}</li>`).join('')}
+      </ul>
     </div>`;
     document.getElementById('markReadBtn').onclick = async ()=>{
       await api('markNotificationsRead', { staffNo: session.staffNo });
-      document.getElementById('notifArea').innerHTML='';
+      area.innerHTML='';
     };
   }
 
-  document.querySelectorAll('.leave-type-selector button').forEach(btn => {
-    btn.onclick = function() {
-      document.querySelectorAll('.leave-type-selector button').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-      selectedLeaveType = this.dataset.type;
-      
-      const calSec = document.getElementById('calendarPickerSection');
-      const multiSec = document.getElementById('multiPeriodSection');
-      
-      if(selectedLeaveType === 'AL' || selectedLeaveType === 'ML') {
-        calSec.style.display = 'none';
-        multiSec.style.display = 'flex';
-      } else {
-        calSec.style.display = 'block';
-        multiSec.style.display = 'none';
-        selectedDays = [];
-        document.getElementById('selectedDaysPreview').textContent = 'لا توجد أيام مختارة';
-      }
-    };
-  });
-
-  document.getElementById('addPeriodBtn').onclick = () => {
-    const container = document.getElementById('periodsContainer');
-    const div = document.createElement('div');
-    div.className = 'period-row';
-    div.style.cssText = 'display:flex; gap:1rem; align-items:center; flex-wrap:wrap; background:#f8fafc; padding:.8rem; border-radius:.8rem; border:1px solid #e2e8f0; margin-top:.4rem;';
-    div.innerHTML = `
-      <div>
-        <label style="font-size:.8rem; font-weight:600; display:block;">من شهر:</label>
-        <input type="month" class="start-ym" value="2027-01" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; outline:none;">
-      </div>
-      <div>
-        <label style="font-size:.8rem; font-weight:600; display:block;">من يوم:</label>
-        <input type="number" class="start-day" min="1" max="31" placeholder="1" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:70px; outline:none;">
-      </div>
-      <div>
-        <label style="font-size:.8rem; font-weight:600; display:block;">إلى شهر:</label>
-        <input type="month" class="end-ym" value="2027-01" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; outline:none;">
-      </div>
-      <div>
-        <label style="font-size:.8rem; font-weight:600; display:block;">إلى يوم:</label>
-        <input type="number" class="end-day" min="1" max="31" placeholder="10" style="padding:.4rem; border-radius:.6rem; border:1px solid #cbd5e1; width:70px; outline:none;">
-      </div>
-      <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>
-    `;
-    container.appendChild(div);
-  };
-
+  /* ---------- Dashboard ---------- */
   async function loadDashboard(){
     if(!session) return;
-    const ym = session.role === 'admin' ? (document.getElementById('adminMonthPicker').value || getYM(new Date())) : getYM(viewDate);
-    const r = await api('getDashboard', { staffNo: session.staffNo, yearMonth: ym, role: session.role });
-    if(!r.ok) return alert(r.error);
+    const ym = getYM(viewDate);
+    const r = await api('getDashboard', {
+      staffNo: session.staffNo, yearMonth: ym, role: session.role
+    });
+    if(!r.ok) {
+        return showMsg(r.error,'error');
+    }
     dashboardData = r;
     render();
   }
 
-  document.getElementById('refreshAdminBtn').onclick = () => {
-    loadDashboard();
-    alert('تم تحديث البيانات بنجاح!');
-  };
-
   function render(){
-    if(session.role === 'doctor') {
-      renderDoctorDashboard();
-    } else {
-      renderAdminDashboard();
-    }
-  }
-
-  function renderDoctorDashboard(){
     const all = dashboardData.bookings || [];
-    const mine = dashboardData.myBookings || [];
-    const currentYM = getYM(viewDate);
-    const myMonthBookings = mine.filter(b => normalizeYM(b.yearMonth) === currentYM);
-    const bookedOffCount = myMonthBookings.filter(b => b.leaveType === 'O').length;
+    // الأطباء يرون حجوزاتهم فقط، المدير يرى الكل
+    const mine = session.role==='doctor'
+      ? all.filter(b=>b.staffNo===session.staffNo)
+      : [];
+    const cnt = mine.length;
     const maxD = dashboardData.maxDays ?? 3;
 
-    document.getElementById('bookedCount').textContent = bookedOffCount;
-    document.getElementById('remainingCount').textContent = Math.max(0, maxD - bookedOffCount);
-    const label = viewDate.toLocaleString('en-US',{month:'long',year:'numeric'});
+    document.getElementById('bookedCount').textContent = cnt;
+    document.getElementById('remainingCount').textContent = Math.max(0, maxD - cnt);
+    
+    // تنسيق التاريخ بالعربية
+    const label = viewDate.toLocaleString('ar-OM',{month:'long',year:'numeric'});
     document.getElementById('currentMonthLabel').textContent = label;
     document.getElementById('monthTitle').textContent = label;
+    document.getElementById('listMonthLabel').textContent = label;
 
+    // عرض القائمة
     const list = document.getElementById('bookedListContainer');
-    if(!mine.length){
-      list.innerHTML = '<div style="color:#64748b;text-align:center;padding:1rem;">لا توجد طلبات مسجلة.</div>';
+    if(!all.length){
+      list.innerHTML = '<div style="color:#64748b;text-align:center;padding:1rem;">لا توجد أيام محجوزة هذا الشهر.</div>';
     } else {
-      list.innerHTML = mine.map(b=>`
+      list.innerHTML = [...all].sort((a,b)=>a.day-b.day).map(b=>`
         <div class="booked-item">
           <span>
-            <strong style="background:#e0f2fe;padding:.2rem .6rem;border-radius:1rem;">${b.yearMonth} - يوم ${b.day}</strong>
-            <span style="margin-right:.5rem;color:${b.leaveType==='ML'?'#db2777':'#0369a1'};font-weight:600;">[${b.leaveType}]</span>
-            <span style="margin-right:.5rem;color:${b.status==='Approved'?'#22c55e':b.status==='Rejected'?'#ef4444':'#f59e0b'};">(${b.status})</span>
+            <span class="day-badge">يوم ${b.day}</span>
+            <span style="color:#334155;margin-right:.5rem;">${esc(b.doctorName)}</span>
+            <span style="color:#94a3b8;font-size:.7rem;margin-right:.4rem;">#${esc(b.staffNo)}</span>
           </span>
-          ${b.status !== 'Approved' ? `<button class="btn btn-danger btn-sm" onclick="cancelBooking('${b.id}')"><i class="fas fa-trash"></i> إلغاء</button>` : '<span style="font-size:.75rem;color:#22c55e;font-weight:600;"><i class="fas fa-check"></i> معتمد</span>'}
+          ${(session.role==='doctor' && b.staffNo===session.staffNo) || session.role==='admin'
+            ? `<button class="delete-btn" data-id="${b.id}" title="حذف"><i class="fas fa-trash-can"></i></button>`
+            : ''}
         </div>`).join('');
+
+      list.querySelectorAll('.delete-btn').forEach(btn=>{
+        btn.onclick = async ()=>{
+          if(!confirm('هل أنت متأكد من إلغاء الحجز؟')) return;
+          const id = btn.dataset.id;
+          const r = session.role==='admin'
+            ? await api('adminUpdateBooking', { bookingId:id, subAction:'delete' })
+            : await api('cancelBooking', { id, staffNo: session.staffNo });
+          if(r.ok){ showMsg('تم الحذف بنجاح','success'); await loadDashboard(); }
+          else showMsg(r.error,'error');
+        };
+      });
     }
 
-    const year = viewDate.getFullYear();
-    const month = viewDate.getMonth()+1;
-    const dim = new Date(year, month, 0).getDate();
-    let html='';
-    for(let d=1; d<=dim; d++){
-      let cls='day-cell';
-      const isBooked = all.some(b => Number(b.day) === d && normalizeYM(b.yearMonth) === currentYM && b.staffNo === session.staffNo);
-      if(isBooked) cls+=' booked';
-      if(selectedDays.includes(d)) cls+=' selected';
-      html += `<div class="${cls}" data-day="${d}">${d}</div>`;
-    }
+    // عرض منتقي الأيام
     const picker = document.getElementById('dayPickerContainer');
-    picker.innerHTML = html;
-
-    picker.querySelectorAll('.day-cell:not(.booked)').forEach(cell=>{
-      cell.onclick = function(){
-        const d = +this.dataset.day;
-        if(selectedDays.includes(d)){
-          selectedDays = selectedDays.filter(x => x !== d);
-          this.classList.remove('selected');
-        } else {
-          selectedDays.push(d);
+    if(session.role==='doctor'){
+      const year = viewDate.getFullYear();
+      const month = viewDate.getMonth()+1;
+      const dim = new Date(year, month, 0).getDate();
+      const myDays = mine.map(b=>b.day);
+      let html='';
+      for(let d=1; d<=dim; d++){
+        let cls='day-cell';
+        if(myDays.includes(d)) cls+=' booked';
+        else if(all.some(b=>b.day===d)) cls+=' disabled';
+        html += `<div class="${cls}" data-day="${d}">${d}</div>`;
+      }
+      picker.innerHTML = html;
+      picker.querySelectorAll('.day-cell:not(.booked):not(.disabled)').forEach(cell=>{
+        cell.onclick = function(){
+          picker.querySelectorAll('.selected').forEach(e=>e.classList.remove('selected'));
           this.classList.add('selected');
-        }
-        document.getElementById('selectedDaysPreview').textContent = selectedDays.length ? selectedDays.sort((a,b)=>a-b).join(', ') : 'لا توجد أيام مختارة';
-      };
-    });
+          selectedDay = +this.dataset.day;
+          document.getElementById('bookingMessage').classList.remove('show');
+        };
+      });
+    } else {
+      picker.innerHTML = '<div style="padding: 1rem; color: #64748b;">أنت مسجل كمدير. يمكنك رؤية وحذف حجوزات الجميع.</div>';
+    }
 
-    document.getElementById('prevMonthBtn').disabled = viewDate <= MIN_VIEW_DATE;
+    selectedDay = null;
+    document.getElementById('prevMonthBtn').disabled = viewDate <= MAX_MONTH;
+    document.getElementById('nextMonthBtn').disabled = viewDate >= MAX_MONTH;
   }
 
-  window.cancelBooking = async function(id){
-    if(!confirm('هل أنت متأكد من إلغاء هذا الطلب؟')) return;
-    const r = await api('cancelBooking', { id, staffNo: session.staffNo });
-    if(r.ok) { alert('تم الإلغاء بنجاح'); loadDashboard(); }
-    else alert(r.error);
-  };
-
-  document.getElementById('confirmBookingBtn').onclick = async () => {
+  /* ---------- Actions ---------- */
+  document.getElementById('addDayBtn').onclick = async ()=>{
+    if(!selectedDay) return showMsg('الرجاء اختيار يوم أولاً','error');
     const ym = getYM(viewDate);
-    let payload = {
-      staffNo: session.staffNo,
-      doctorName: session.name,
-      yearMonth: ym,
-      leaveType: selectedLeaveType
-    };
-
-    if (selectedLeaveType === 'AL' || selectedLeaveType === 'ML') {
-      const rows = document.querySelectorAll('.period-row');
-      let periods = [];
-      for(let row of rows) {
-        const startYM = normalizeYM(row.querySelector('.start-ym').value);
-        const startDay = row.querySelector('.start-day').value;
-        const endYM = normalizeYM(row.querySelector('.end-ym').value);
-        const endDay = row.querySelector('.end-day').value;
-        if(startYM && startDay && endYM && endDay) {
-          periods.push({ startYM, startDay, endYM, endDay });
-        }
-      }
-      if(periods.length === 0) return alert('الرجاء إدخال فترات صحيحة (من شهر/يوم إلى شهر/يوم)');
-      payload.periods = periods;
-    } else {
-      if(!selectedDays.length) return alert('الرجاء اختيار أيام أولاً من التقويم');
-      payload.days = selectedDays;
-    }
-
-    const r = await api('bookDays', payload);
-    if(r.ok) {
-      alert('تم حجز الفترات وإرسال الطلب بنجاح!');
-      selectedDays = [];
-      document.getElementById('selectedDaysPreview').textContent = 'لا توجد أيام مختارة';
-      await loadDashboard();
-    } else {
-      alert(r.error);
-    }
+    const r = await api('bookDay', {
+      staffNo: session.staffNo, doctorName: session.name, yearMonth: ym, day: selectedDay
+    });
+    if(r.ok){ showMsg(`تم حجز يوم ${selectedDay} بنجاح!`,'success'); await loadDashboard(); }
+    else showMsg(r.error,'error');
   };
 
-  function renderAdminDashboard(){
-    const all = dashboardData.bookings || [];
-    const doctors = dashboardData.doctors || [];
-    const selectedMonthYM = normalizeYM(document.getElementById('adminMonthPicker').value || getYM(new Date()));
-
-    // 1. تقويم الطلبات (للشهر المحدد: O و Call فقط)
-    let reqHtml = `<table class="admin-calendar-table"><tr><th>الطبيب</th><th>الرقم</th>`;
-    for(let d=1; d<=31; d++) reqHtml += `<th>${d}</th>`;
-    reqHtml += `<th>إجراءات</th></tr>`;
-
-    doctors.forEach(doc => {
-      reqHtml += `<tr><td style="font-weight:600;text-align:right;white-space:nowrap;">${doc.name}</td><td>${doc.staffNo}</td>`;
-      for(let d=1; d<=31; d++){
-        const b = all.find(x => x.staffNo === doc.staffNo && normalizeYM(x.yearMonth) === selectedMonthYM && Number(x.day) === d && (x.leaveType === 'O' || x.leaveType === 'Call'));
-        let cellText = '';
-        let bg = '';
-        if(b) {
-          cellText = b.leaveType;
-          bg = b.status === 'Approved' ? '#d1fae5' : '#fef3c7';
-        }
-        reqHtml += `<td style="background:${bg};font-weight:bold;font-size:.75rem;" title="${b ? 'النوع: '+b.leaveType+' | الحالة: '+b.status : ''}">${cellText} ${b && b.status==='Pending'?'*':''}</td>`;
-      }
-      reqHtml += `<td><button class="btn btn-sm btn-success" onclick="promptAdminAction('${doc.staffNo}','${doc.name}')">إدارة</button></td></tr>`;
-    });
-    reqHtml += `</table>`;
-    document.getElementById('requestsCalendarContainer').innerHTML = reqHtml;
-
-    // 2. تقويم الإجازات السنوية وإجازة الوضع (خطة السنة كاملة: AL & ML فقط)
-    let annHtml = `<table class="admin-calendar-table"><tr><th>الطبيب</th><th>الرقم</th>`;
-    const monthsCode = ['2027-01','2027-02','2027-03','2027-04','2027-05','2027-06','2027-07','2027-08','2027-09','2027-10','2027-11','2027-12'];
-    const monthsName = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-    
-    monthsName.forEach(m => { annHtml += `<th>${m}</th>`; });
-    annHtml += `</tr>`;
-
-    doctors.forEach(doc => {
-      annHtml += `<tr><td style="font-weight:600;text-align:right;white-space:nowrap;">${doc.name}</td><td style="font-weight:600;">${doc.staffNo}</td>`;
-      monthsCode.forEach(ym => {
-        const mineLeaves = all.filter(x => x.staffNo === doc.staffNo && normalizeYM(x.yearMonth) === ym && (x.leaveType === 'AL' || x.leaveType === 'ML'));
-        mineLeaves.sort((a,b) => a.day - b.day);
-        const daysStr = mineLeaves.map(b => `${b.day}(${b.leaveType})`).join(', ');
-        const hasML = mineLeaves.some(b => b.leaveType === 'ML');
-        const bg = hasML ? '#fce7f3' : mineLeaves.length ? '#d1fae5' : '';
-        annHtml += `<td style="background:${bg};font-size:.75rem;text-align:center;">${daysStr || '-'}</td>`;
-      });
-      annHtml += `</tr>`;
-    });
-    annHtml += `</table>`;
-    document.getElementById('annualLeaveCalendarContainer').innerHTML = annHtml;
-  }
-
-  window.promptAdminAction = function(staffNo, doctorName){
-    const action = prompt('اختر الإجراء:\n1. إضافة يوم جديد (add)', 'add');
-    if(!action) return;
-    if(action === 'add'){
-      const day = prompt('أدخل رقم اليوم (1-31):');
-      if(!day) return;
-      const leaveType = prompt('نوع الإجازة (O, Call, AL, ML):', 'O');
-      const yearMonth = document.getElementById('adminMonthPicker').value || getYM(new Date());
-      api('adminUpdateBooking', { staffNo, doctorName, yearMonth, day, leaveType, subAction: 'add' }).then(r => {
-        if(r.ok) { alert('تمت الإضافة بنجاح'); loadDashboard(); } else alert(r.error);
-      });
-    }
+  document.getElementById('prevMonthBtn').onclick = ()=>{
+    const d = new Date(viewDate); d.setMonth(d.getMonth()-1);
+    if(d < MAX_MONTH) return;
+    viewDate = d; loadDashboard();
   };
-
-  document.getElementById('adminMonthPicker').onchange = () => loadDashboard();
+  document.getElementById('nextMonthBtn').onclick = ()=>{
+    const d = new Date(viewDate); d.setMonth(d.getMonth()+1);
+    if(d > MAX_MONTH) return;
+    viewDate = d; loadDashboard();
+  };
 
   document.getElementById('exportBtn').onclick = async ()=>{
-    const ym = document.getElementById('adminMonthPicker').value || getYM(new Date());
-    const r = await api('exportExcel', { yearMonth: ym });
+    const r = await api('exportExcel', { yearMonth: getYM(viewDate) });
     if(r.ok) window.open(r.downloadUrl, '_blank');
-    else alert(r.error || 'فشل التصدير');
+    else showMsg(r.error||'فشل التصدير','error');
   };
+
+  function showMsg(t, c){
+    const m = document.getElementById('bookingMessage');
+    if(!m) return;
+    m.textContent = t;
+    m.className = 'message show ' + c;
+    setTimeout(()=>{ m.classList.remove('show'); }, 4000);
+  }
+  function esc(t){ return String(t).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 
   setStatus('online');
 })();
