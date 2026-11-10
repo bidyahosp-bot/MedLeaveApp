@@ -16,7 +16,6 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; padding:1rem; color:var(--dark); display:flex; justify-content:center; }
     
-    /* Wider Container */
     .app-container { max-width: 1500px; width:100%; background:#fff; border-radius:1.5rem; padding:2rem; box-shadow:0 20px 40px rgba(0,0,0,.1); }
     
     /* Top Nav */
@@ -45,6 +44,7 @@
     .form-group { margin-bottom:1rem; }
     .form-group label { display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.3rem; }
     .form-group input, .form-group select { width:100%; padding:0.7rem; border:1px solid #cbd5e1; border-radius:0.5rem; font-family:inherit; font-size:0.95rem; }
+    .form-group input:disabled { background-color: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
     
     /* Calendar */
     .calendar-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
@@ -142,15 +142,13 @@
 
       <div class="panel hidden" id="adminDutyList">
         <div class="panel-title">All Doctor Requests (This Month)</div>
-        <div class="admin-list-container" id="adminDutyListContainer">
-          <!-- Grouped list will appear here -->
-        </div>
+        <div class="admin-list-container" id="adminDutyListContainer"></div>
       </div>
     </div>
 
     <!-- ================= SECTION 2: ANNUAL & MATERNITY ================= -->
     <div id="section-long" class="layout-grid hidden">
-      <!-- Left: Calendar (For Doctor to Select Dates, or Admin to View) -->
+      <!-- Left: Calendar -->
       <div class="panel">
         <div class="calendar-header">
           <button class="btn" style="background:#fff; color:#000; border:1px solid #ccc; padding:0.4rem 1rem;" onclick="changeLongMonth(-1)">&lt; Prev</button>
@@ -166,7 +164,7 @@
         <div class="panel-title">Register Leave</div>
         <div class="form-group">
           <label>Leave Type</label>
-          <select id="longType">
+          <select id="longType" onchange="onLongTypeChange()">
             <option value="ANNUAL">Annual Leave</option>
             <option value="MATERNITY">Maternity Leave (98 Days Auto-calculated)</option>
           </select>
@@ -196,14 +194,14 @@
   let dutyDate = new Date(); dutyDate.setMonth(dutyDate.getMonth() + 1);
   let longDate = new Date(); longDate.setFullYear(longDate.getFullYear() + 1); longDate.setMonth(0, 1);
 
-  let dutyBookings = [];
-  let longBookings = [];
+  // الخزن المؤقت للبيانات لسرعة فائقة
+  let allDutyBookings = []; 
+  let allLongBookings = [];
 
   // Range Selection Variables
-  let selectionState = 'idle'; // idle, startSelected
+  let selectionState = 'idle'; 
   let selectedStart = null;
   let selectedEnd = null;
-  let activeCalendarType = null; // 'duty' or 'long'
 
   async function api(action, payload) {
     const res = await fetch(API_URL, { method: 'POST', headers: {'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action, ...payload}) });
@@ -239,10 +237,33 @@
       document.getElementById('doctorLongForm').classList.remove('hidden');
     }
 
-    loadData();
+    // تحميل كل البيانات مرة واحدة فقط
+    await initialLoad();
   };
 
   document.getElementById('logoutBtn').onclick = () => location.reload();
+
+  // هذه الدالة تجلب كل البيانات وتخزنها في المتصفح
+  async function initialLoad() {
+    // جلب كل الطلبات (من 2024 إلى 2030)
+    const rDuty = await api('getData', { staffNo: session.staffNo, role: session.role, startDate: '2024-01-01', endDate: '2030-12-31', filterType: 'DUTY' });
+    if(rDuty.ok) allDutyBookings = rDuty.bookings;
+
+    const rLong = await api('getData', { staffNo: session.staffNo, role: session.role, filterType: 'LONG' });
+    if(rLong.ok) allLongBookings = rLong.bookings;
+
+    renderCurrentTab();
+  }
+
+  function renderCurrentTab() {
+    if(currentTab === 'duty') {
+      renderCalendar('duty');
+      if(session.role === 'admin') renderAdminDutyList();
+    } else {
+      renderCalendar('long');
+      if(session.role === 'admin') renderLongTable();
+    }
+  }
 
   function switchTab(tab) {
     currentTab = tab;
@@ -257,50 +278,29 @@
       document.getElementById('section-duty').classList.add('hidden');
       document.getElementById('section-long').classList.remove('hidden');
     }
-    loadData();
+    renderCurrentTab();
   }
 
   function resetSelection() {
     selectionState = 'idle';
     selectedStart = null;
     selectedEnd = null;
-    if(document.getElementById('dutyStart')) {
-      document.getElementById('dutyStart').value = '';
-      document.getElementById('dutyEnd').value = '';
-      document.getElementById('longStart').value = '';
-      document.getElementById('longEnd').value = '';
-    }
+    document.getElementById('dutyStart').value = '';
+    document.getElementById('dutyEnd').value = '';
+    document.getElementById('longStart').value = '';
+    document.getElementById('longEnd').value = '';
   }
 
-  async function loadData() {
-    if(currentTab === 'duty') {
-      const y = dutyDate.getFullYear(), m = dutyDate.getMonth();
-      const first = new Date(y, m, 1).toISOString().split('T')[0];
-      const last = new Date(y, m + 1, 0).toISOString().split('T')[0];
-      
-      const r = await api('getData', { staffNo: session.staffNo, role: session.role, startDate: first, endDate: last, filterType: 'DUTY' });
-      if(r.ok) { 
-        dutyBookings = r.bookings; 
-        renderCalendar('duty'); 
-        if(session.role === 'admin') renderAdminDutyList();
-      }
-    } else {
-      const r = await api('getData', { staffNo: session.staffNo, role: session.role, filterType: 'LONG' });
-      if(r.ok) { 
-        longBookings = r.bookings; 
-        renderCalendar('long'); 
-        if(session.role === 'admin') renderLongTable();
-      }
-    }
-  }
-
+  // رسم التقويم من البيانات المخزنة (سريع جداً)
   function renderCalendar(type) {
     const isDuty = type === 'duty';
     const dateObj = isDuty ? dutyDate : longDate;
     const y = dateObj.getFullYear(), m = dateObj.getMonth();
     const titleEl = document.getElementById(isDuty ? 'dutyMonthTitle' : 'longMonthTitle');
     const gridEl = document.getElementById(isDuty ? 'dutyCalendar' : 'longCalendar');
-    const bookings = isDuty ? dutyBookings : longBookings;
+    
+    // نأخذ البيانات من المخزن المؤقت
+    const bookings = isDuty ? allDutyBookings : allLongBookings;
     
     titleEl.textContent = dateObj.toLocaleString('en-US', {month:'long', year:'numeric'});
     
@@ -325,7 +325,6 @@
       if(session.role === 'doctor') {
         events.forEach(e => evHtml += `<div class="event bg-${e.leaveType}">${e.leaveType}</div>`);
       } else {
-        // Admin sees initials in calendar
         events.forEach(e => {
           let initials = e.doctorName.split(' ').filter(n=>n!=='Dr.').map(n=>n[0]).join('').substring(0,2);
           evHtml += `<div class="event bg-${e.leaveType}">${initials}</div>`;
@@ -337,23 +336,19 @@
     gridEl.innerHTML = html;
   }
 
-  // Handle calendar clicks for date range selection (Doctors only)
   window.clickDay = function(dateStr, type) {
-    if(session.role === 'admin') return; // Admin just views
+    if(session.role === 'admin') return; 
 
-    activeCalendarType = type;
     const startInputId = type === 'duty' ? 'dutyStart' : 'longStart';
     const endInputId = type === 'duty' ? 'dutyEnd' : 'longEnd';
     
     if (selectionState === 'idle' || selectionState === 'complete') {
-      // Start new selection
       selectedStart = dateStr;
       selectedEnd = null;
       selectionState = 'startSelected';
       document.getElementById(startInputId).value = dateStr;
       document.getElementById(endInputId).value = '';
     } else if (selectionState === 'startSelected') {
-      // Complete selection
       if (dateStr >= selectedStart) {
         selectedEnd = dateStr;
       } else {
@@ -364,21 +359,55 @@
       document.getElementById(startInputId).value = selectedStart;
       document.getElementById(endInputId).value = selectedEnd;
     }
+
+    // حساب إجازة الوضع تلقائياً إذا تم اختيارها
+    if (type === 'long' && document.getElementById('longType').value === 'MATERNITY') {
+      calculateMaternityEnd(selectedStart);
+    }
     
     renderCalendar(type);
   };
 
-  // Update Admin Duty List (Grouped by Doctor)
+  // دالة حساب إجازة الوضع
+  function calculateMaternityEnd(startStr) {
+    if(!startStr) return;
+    const start = new Date(startStr);
+    const end = new Date(start);
+    end.setDate(end.getDate() + 97); // إضافة 98 يوم شامل البداية
+    const endStr = end.toISOString().split('T')[0];
+    document.getElementById('longEnd').value = endStr;
+    selectedEnd = endStr; // لتظهر في التقويم
+  }
+
+  // حدث عند تغيير نوع الإجازة
+  window.onLongTypeChange = function() {
+    const type = document.getElementById('longType').value;
+    const startStr = document.getElementById('longStart').value;
+    
+    if (type === 'MATERNITY') {
+      // إذا اختار وضع، نقفل خانة النهاية ونحسبها
+      if (startStr) calculateMaternityEnd(startStr);
+    } else {
+      // إذا اختار سنوية، يفتح الخانة ليختار هو
+      document.getElementById('longEnd').value = selectedEnd || '';
+    }
+  };
+
   function renderAdminDutyList() {
     const container = document.getElementById('adminDutyListContainer');
-    if(dutyBookings.length === 0) {
+    // نعرض فقط حجوزات الشهر المعروض حالياً للمدير
+    const y = dutyDate.getFullYear(), m = dutyDate.getMonth();
+    const monthStr = `${y}-${String(m+1).padStart(2,'0')}`;
+    
+    const monthBookings = allDutyBookings.filter(b => b.startDate.startsWith(monthStr) || b.endDate.startsWith(monthStr) || (b.startDate <= `${monthStr}-31` && b.endDate >= `${monthStr}-01`));
+
+    if(monthBookings.length === 0) {
       container.innerHTML = '<p style="color:#64748b;">No requests for this month.</p>';
       return;
     }
 
-    // Group by Doctor
     const grouped = {};
-    dutyBookings.forEach(b => {
+    monthBookings.forEach(b => {
       if(!grouped[b.staffNo]) grouped[b.staffNo] = { name: b.doctorName, leaves: [] };
       grouped[b.staffNo].leaves.push(b);
     });
@@ -386,29 +415,21 @@
     let html = '';
     for(const staffNo in grouped) {
       const doc = grouped[staffNo];
-      // Sort leaves by start date
       doc.leaves.sort((a,b) => a.startDate.localeCompare(b.startDate));
-      
       let leaveBadges = doc.leaves.map(l => {
         let dateStr = l.startDate;
         if(l.endDate && l.startDate !== l.endDate) dateStr += ` to ${l.endDate}`;
         return `<span class="leave-badge" style="border-left: 3px solid var(--c-${l.leaveType})">${l.leaveType}: ${dateStr}</span>`;
       }).join('');
 
-      html += `
-        <div class="doctor-group">
-          <div class="doctor-name">${doc.name} <span style="font-size:0.8rem; color:#64748b; font-weight:normal;">#${staffNo}</span></div>
-          <div class="doctor-leaves">${leaveBadges}</div>
-        </div>
-      `;
+      html += `<div class="doctor-group"><div class="doctor-name">${doc.name}</div><div class="doctor-leaves">${leaveBadges}</div></div>`;
     }
     container.innerHTML = html;
   }
 
   function renderLongTable() {
     let html = '';
-    // Sort longBookings by date
-    const sorted = [...longBookings].sort((a,b) => a.startDate.localeCompare(b.startDate));
+    const sorted = [...allLongBookings].sort((a,b) => a.startDate.localeCompare(b.startDate));
     
     sorted.forEach(b => {
       html += `<tr>
@@ -432,7 +453,7 @@
     if(r.ok) { 
       alert('Request submitted successfully!'); 
       resetSelection(); 
-      loadData(); 
+      await initialLoad(); // تحديث البيانات بصمت
     } else {
       alert(r.error);
     }
@@ -441,14 +462,20 @@
   window.submitLongLeave = async () => {
     const type = document.getElementById('longType').value;
     const start = document.getElementById('longStart').value;
-    const end = document.getElementById('longEnd').value;
+    let end = document.getElementById('longEnd').value;
+    
+    if(type === 'MATERNITY' && start) {
+      calculateMaternityEnd(start);
+      end = document.getElementById('longEnd').value; // نأخذ التاريخ المحسوب
+    }
+
     if(!start || !end) return alert('Please select a date range on the calendar first.');
     
     const r = await api('bookLeave', { staffNo: session.staffNo, doctorName: session.name, leaveType: type, startDate: start, endDate: end });
     if(r.ok) { 
       alert('Leave submitted successfully!'); 
       resetSelection(); 
-      loadData(); 
+      await initialLoad(); 
     } else {
       alert(r.error);
     }
@@ -457,11 +484,19 @@
   window.deleteLeave = async (id) => {
     if(!confirm('Are you sure you want to delete this leave?')) return;
     const r = await api('cancelBooking', { id });
-    if(r.ok) loadData();
+    if(r.ok) await initialLoad();
   };
 
-  window.changeMonth = (dir) => { dutyDate.setMonth(dutyDate.getMonth() + dir); loadData(); };
-  window.changeLongMonth = (dir) => { longDate.setMonth(longDate.getMonth() + dir); loadData(); };
+  // التنقل الفوري بدون طلب من السيرفر
+  window.changeMonth = (dir) => { 
+    dutyDate.setMonth(dutyDate.getMonth() + dir); 
+    renderCurrentTab(); // رسم فوري فقط
+  };
+  
+  window.changeLongMonth = (dir) => { 
+    longDate.setMonth(longDate.getMonth() + dir); 
+    renderCurrentTab(); 
+  };
 </script>
 </body>
 </html>
